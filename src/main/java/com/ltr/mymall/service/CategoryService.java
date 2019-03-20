@@ -9,4 +9,6 @@ public interface CategoryService {
 	public List<Category> list(Page page);
 	
 	public int total();
+	
+	public void add(Category category);
 }
