@@ -39,16 +39,16 @@ public class CategoryController {
         return "admin/listCategory";
     }
     
-    //添加分类、上传图片
-    @RequestMapping("admin_category_add")
+   
     /**
-     * 
+     * 添加分类、上传图片
      * @param category 接受页面提交的分类名
      * @param session  获取当前应用的路径
      * @param uploadedImageFile 接受上传的图片
      * @throws IOException
      * 
      */
+    @RequestMapping("admin_category_add")
     public String add(Category category,HttpSession session, UploadedImageFile uploadedImageFile) throws IOException {
       	categoryService.add(category);
       	
@@ -72,6 +72,33 @@ public class CategoryController {
         ImageIO.write(img, "jpg", file);
         
         return "redirect:/admin_category_list";
+    }
+    
+    /**
+     * @param id 接受表单注入的id
+     * 根据id删除分类
+     */
+    @RequestMapping("admin_category_delete")
+    public String delete(int id, HttpSession session) throws IOException{
+    	categoryService.delete(id);
+    	//图片删除
+    	File imageFolder = new File(session.getServletContext().getRealPath("img/category"));
+    	File file = new File(imageFolder, id + ".jpg");
+    	file.delete();
+    	
+    	return "redirect:/admin_category_list";
+    }
+    
+    /**
+     * @param id 接受表单注入的id
+     * 根据id编辑分类
+     */
+    @RequestMapping("admin_category_edit")
+    public String edit(int id, Model model) {
+    	Category category = categoryService.get(id);
+    	
+    	model.addAttribute("c",category);
+    	return "admin/editCategory";
     }
 }
 
