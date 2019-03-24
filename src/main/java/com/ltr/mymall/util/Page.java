@@ -63,6 +63,10 @@ public class Page {
 			totalPage = total / count;
 		else
 			totalPage = total / count + 1;
+		
+		/*当没有数据时默认页数总数为1*/
+		if(0 == totalPage)
+			totalPage = 1;
 		return totalPage;
 	}
 	public String toString() {

@@ -32,9 +32,9 @@ public class CategoryController {
     
     
     /**
-     * 分页显示
+     * 使用PageHelper分页显示
      * @param model
-     * @param page
+     * @param page 获取页面相关数据
      * @return
      */
     @RequestMapping("admin_category_list")
@@ -51,7 +51,7 @@ public class CategoryController {
     
    
     /**
-     * 添加分类、上传图片
+     * 添加分类、上传分类图片
      * @param category 接受页面提交的分类名
      * @param session  获取当前应用的路径
      * @param uploadedImageFile 接收上传的图片
@@ -85,7 +85,7 @@ public class CategoryController {
     }
     
     /**
-     * 根据id删除分类
+     * 根据表单提交的id删除分类
      * @param id 接受表单注入的id
      * 
      */
@@ -101,12 +101,12 @@ public class CategoryController {
     }
     
     /**
-     * 根据id编辑分类
+     * 根据表单提交的id编辑分类
      * @param id 接受表单注入的id
      * 
      */
     @RequestMapping("admin_category_edit")
-    public String edit(int id, Model model) {
+    public String edit(Model model,int id) {
     	Category category = categoryService.get(id);
     	
     	model.addAttribute("c",category);

@@ -1,5 +1,6 @@
 package com.ltr.mymall.pojo;
 
+//物品属性的pojo
 public class Property {
     private Integer id;
 
@@ -7,6 +8,19 @@ public class Property {
 
     private String name;
 
+    /*非自动生成*/
+    private Category category;
+    
+    /*非自动生成*/
+    public void setCategory(Category category) {
+    	this.category = category;
+    }
+    
+    /*非自动生成*/
+    public Category getCategory() {
+    	return category;
+    }
+    
     public Integer getId() {
         return id;
     }
