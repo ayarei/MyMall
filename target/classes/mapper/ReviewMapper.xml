@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ltr.mymall.mapper.CategoryMapper">
-  <resultMap id="BaseResultMap" type="com.ltr.mymall.pojo.Category">
+<mapper namespace="com.ltr.mymall.mapper.ReviewMapper">
+  <resultMap id="BaseResultMap" type="com.ltr.mymall.pojo.Review">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="createDate" jdbcType="TIMESTAMP" property="createDate" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -35,16 +38,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name
+    id, content, uid, pid, createDate
   </sql>
-  <select id="selectByExample" parameterType="com.ltr.mymall.pojo.CategoryExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.ltr.mymall.pojo.ReviewExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     'false' as QUERYID,
     <include refid="Base_Column_List" />
-    from category
+    from review
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -55,42 +58,74 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from category
+    from review
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from category
+    delete from review
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ltr.mymall.pojo.Category" useGeneratedKeys="true">
-    insert into category (name)
-    values (#{name,jdbcType=VARCHAR})
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ltr.mymall.pojo.Review" useGeneratedKeys="true">
+    insert into review (content, uid, pid, 
+      createDate)
+    values (#{content,jdbcType=VARCHAR}, #{uid,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, 
+      #{createDate,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ltr.mymall.pojo.Category" useGeneratedKeys="true">
-    insert into category
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ltr.mymall.pojo.Review" useGeneratedKeys="true">
+    insert into review
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        name,
+      <if test="content != null">
+        content,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="createDate != null">
+        createDate,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ltr.mymall.pojo.Category">
-    update category
+  <update id="updateByPrimaryKeySelective" parameterType="com.ltr.mymall.pojo.Review">
+    update review
     <set>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        createDate = #{createDate,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.ltr.mymall.pojo.Category">
-    update category
-    set name = #{name,jdbcType=VARCHAR}
+  <update id="updateByPrimaryKey" parameterType="com.ltr.mymall.pojo.Review">
+    update review
+    set content = #{content,jdbcType=VARCHAR},
+      uid = #{uid,jdbcType=INTEGER},
+      pid = #{pid,jdbcType=INTEGER},
+      createDate = #{createDate,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

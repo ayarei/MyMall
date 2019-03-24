@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ltr.mymall.mapper.CategoryMapper;
 import com.ltr.mymall.pojo.Category;
+import com.ltr.mymall.pojo.CategoryExample;
 import com.ltr.mymall.service.CategoryService;
 import com.ltr.mymall.util.Page;
 
@@ -26,31 +27,32 @@ public class CategoryServiceImpl implements CategoryService{
 	}*/
 /*******************************************************************/
 	@Override
-	public List<Category> list() {
-		
-		return categoryMapper.list();
+	public List<Category> list() {	
+		CategoryExample example =new CategoryExample();
+        example.setOrderByClause("id desc");
+        return categoryMapper.selectByExample(example);
 	}	
 	
 	@Override
 	public void add(Category category) {
-		categoryMapper.add(category);
+		categoryMapper.insert(category);
 		
 	}
 
 	@Override
 	public void delete(int id) {
-		categoryMapper.delete(id);
+		categoryMapper.deleteByPrimaryKey(id);
 		
 	}
 
 	@Override
 	public Category get(int id) {
-		return categoryMapper.get(id);
+		return categoryMapper.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public void update(Category category) {
-		categoryMapper.update(category);		
+		categoryMapper.updateByPrimaryKeySelective(category);		
 	}
 
 	
