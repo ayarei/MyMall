@@ -1,5 +1,7 @@
 package com.ltr.mymall.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.ltr.mymall.pojo.Category;
 import com.ltr.mymall.service.CategoryService;
 import com.ltr.mymall.util.ImageUtil;
@@ -37,9 +39,9 @@ public class CategoryController {
      */
     @RequestMapping("admin_category_list")
     public String list(Model model, Page page){
-        List<Category> cs= categoryService.list(page);
-        
-        int total = categoryService.total();
+        PageHelper.offsetPage(page.getStart(), page.getCount());
+    	List<Category> cs= categoryService.list();        
+        int total = (int) new PageInfo<>(cs).getTotal();
         page.setTotal(total);
         
         model.addAttribute("cs", cs);

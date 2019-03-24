@@ -6,11 +6,15 @@ import com.ltr.mymall.util.Page;
 import java.util.List;
 
 public interface CategoryMapper {
-	 //分页查询
-	public List<Category> list(Page page);
-	
+	 
+/**********************分页查询使用PageHelper*********************/
+	//public List<Category> list(Page page);
 	//获取数据总数
-	public int total();
+	//public int total();
+/****************************************************************/
+	
+	//pageHelper提供分页功能
+	public List<Category> list();
 	
 	//根据表单提供的数据添加
 	public void add(Category category);

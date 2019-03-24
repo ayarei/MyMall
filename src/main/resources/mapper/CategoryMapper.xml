@@ -5,16 +5,25 @@
  
 <mapper namespace="com.ltr.mymall.mapper.CategoryMapper">
 
+  
+  <select id="list" resultType="Category">
+    select * from   category order by id desc
+  </select>
+  
+  <!--*****************分页功能使用PageHelper*****************-->
+  <!--  
   <select id="list" resultType="Category">
     select * from   category order by id desc
     <if test="start != null and count != null">
     	limit #{start},#{count}
     </if>
   </select>
-  
   <select id="total" resultType="int">
   	select count(*) from category
   </select>
+  -->
+  <!--*******************************************************--> 
+  
   
   <insert id="add" keyProperty="id" useGeneratedKeys="true">
   	insert into category (name) values(#{name})
@@ -32,3 +41,23 @@
   	update category set name = #{name} where id = #{id}
   </update>
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

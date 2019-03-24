@@ -14,7 +14,8 @@ public class CategoryServiceImpl implements CategoryService{
 	@Autowired
 	CategoryMapper categoryMapper;
 	
-	public List<Category> list(Page page) {
+/*******************PageHelper提供分页功能**************************/
+	/*public List<Category> list(Page page) {
 		return categoryMapper.list(page);
 	}
 
@@ -22,8 +23,14 @@ public class CategoryServiceImpl implements CategoryService{
 	public int total() {
 	
 		return categoryMapper.total();
-	}
-
+	}*/
+/*******************************************************************/
+	@Override
+	public List<Category> list() {
+		
+		return categoryMapper.list();
+	}	
+	
 	@Override
 	public void add(Category category) {
 		categoryMapper.add(category);
@@ -44,6 +51,8 @@ public class CategoryServiceImpl implements CategoryService{
 	@Override
 	public void update(Category category) {
 		categoryMapper.update(category);		
-	}	
+	}
+
+	
 
 }
