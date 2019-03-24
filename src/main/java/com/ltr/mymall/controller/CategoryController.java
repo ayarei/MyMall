@@ -6,6 +6,8 @@ import com.ltr.mymall.util.ImageUtil;
 import com.ltr.mymall.util.Page;
 import com.ltr.mymall.util.UploadedImageFile;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("")
@@ -26,7 +29,12 @@ public class CategoryController {
     CategoryService categoryService;
     
     
-    //分页显示
+    /**
+     * 分页显示
+     * @param model
+     * @param page
+     * @return
+     */
     @RequestMapping("admin_category_list")
     public String list(Model model, Page page){
         List<Category> cs= categoryService.list(page);
@@ -44,7 +52,7 @@ public class CategoryController {
      * 添加分类、上传图片
      * @param category 接受页面提交的分类名
      * @param session  获取当前应用的路径
-     * @param uploadedImageFile 接受上传的图片
+     * @param uploadedImageFile 接收上传的图片
      * @throws IOException
      * 
      */
@@ -64,7 +72,7 @@ public class CategoryController {
         //System.out.println(uploadedImageFile.getImage());
         //System.out.println(file);
     	
-    	//保存图片在“img/category”
+    	//图片保存在“img/category”
     	uploadedImageFile.getImage().transferTo(file);
     	
     	//确保图片是.jpg格式
@@ -75,8 +83,9 @@ public class CategoryController {
     }
     
     /**
-     * @param id 接受表单注入的id
      * 根据id删除分类
+     * @param id 接受表单注入的id
+     * 
      */
     @RequestMapping("admin_category_delete")
     public String delete(int id, HttpSession session) throws IOException{
@@ -90,8 +99,9 @@ public class CategoryController {
     }
     
     /**
-     * @param id 接受表单注入的id
      * 根据id编辑分类
+     * @param id 接受表单注入的id
+     * 
      */
     @RequestMapping("admin_category_edit")
     public String edit(int id, Model model) {
@@ -99,6 +109,32 @@ public class CategoryController {
     	
     	model.addAttribute("c",category);
     	return "admin/editCategory";
+    }
+    
+    /**
+     * 更新数据
+     * @param category  接受表单注入的分类信息
+     * @param session  获取当前应用路径
+     * @param uploadedImageFile 接收上传的图片
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("admin_category_update")
+    public String update(Category category, HttpSession session, UploadedImageFile uploadedImageFile) throws IOException{
+    	categoryService.update(category);
+    	
+    	//获取图片的二进制形式
+    	MultipartFile image = uploadedImageFile.getImage();
+    	
+    	//更改过图片再执行
+    	if(null != image && !image.isEmpty()) {
+    		File imageFolder = new File(session.getServletContext().getRealPath("img/category"));
+    		File file = new File(imageFolder,category.getId()+".jpg");
+    		image.transferTo(file);
+    		BufferedImage img = ImageUtil.change2jpg(file);
+    		ImageIO.write(img, "jpg", file);
+    	}
+    	return "redirect:/admin_category_list";
     }
 }
 

@@ -20,4 +20,7 @@ public interface CategoryMapper {
 	
 	//根据id获取相应元素
 	public Category get(int id);
+	
+	//更新内容
+	public void update(Category category);
 }
