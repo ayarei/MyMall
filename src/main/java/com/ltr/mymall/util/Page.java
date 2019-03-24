@@ -7,7 +7,7 @@ public class Page {
 	private int total; //数据总数
 	private String param;//
 	
-	private static final int defaultCount = 5;//默认每页五条数据
+	private static final int defaultCount = 8;//默认每页数据数量
 	
 	public int getStart() {
         return start;
