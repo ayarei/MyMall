@@ -5,7 +5,7 @@ public class Page {
 	private int start; //开始位置
 	private int count; //每页显示数量
 	private int total; //数据总数
-	private String param;//
+	private String param; //往前台url传送特定字符
 	
 	private static final int defaultCount = 8;//默认每页数据数量
 	

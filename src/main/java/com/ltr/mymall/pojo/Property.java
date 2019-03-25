@@ -8,15 +8,13 @@ public class Property {
 
     private String name;
 
-    /*非自动生成*/
-    private Category category;
     
-    /*非自动生成*/
+    private Category category;
+       
     public void setCategory(Category category) {
     	this.category = category;
     }
-    
-    /*非自动生成*/
+     
     public Category getCategory() {
     	return category;
     }

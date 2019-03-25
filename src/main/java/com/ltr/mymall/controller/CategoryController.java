@@ -23,7 +23,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
-
+/**
+ * Category数据表表
+ * primary key:	id
+ * key:			name
+ *
+ */
 @Controller
 @RequestMapping("")
 public class CategoryController {

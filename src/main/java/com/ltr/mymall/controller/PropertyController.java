@@ -14,7 +14,13 @@ import com.ltr.mymall.pojo.Property;
 import com.ltr.mymall.service.CategoryService;
 import com.ltr.mymall.service.PropertyService;
 import com.ltr.mymall.util.Page;
-
+/**
+ * Property数据表
+ * primary key:	id
+ * foreign key: cid
+ * key:			name
+ *
+ */
 @Controller
 @RequestMapping("")
 public class PropertyController {
