@@ -7,9 +7,10 @@ import com.ltr.mymall.pojo.PropertyValue;
 
 public interface PropertyValueService {
 	
-	void init(Product p);
-    void update(PropertyValue pv);
+	public void init(Product p);
+	public void update(PropertyValue pv);
  
-    PropertyValue get(int ptid, int pid);
-    List<PropertyValue> list(int pid);
+	public void delete(int pid);
+	public PropertyValue get(int ptid, int pid);
+	public List<PropertyValue> list(int pid);
 }

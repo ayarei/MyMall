@@ -75,4 +75,29 @@ public class PropertyValueServiceImpl implements PropertyValueService {
         return result;
 	}
 
+	@Override
+	public void delete(int pid) {
+		PropertyValueExample example = new PropertyValueExample();
+		example.createCriteria().andPidEqualTo(pid);
+		List<PropertyValue> result = propertyValueMapper.selectByExample(example);
+		for(PropertyValue pv : result) {
+			propertyValueMapper.deleteByPrimaryKey(pv.getId());
+		}
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
