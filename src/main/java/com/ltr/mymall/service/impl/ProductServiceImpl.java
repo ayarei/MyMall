@@ -9,7 +9,9 @@ import com.ltr.mymall.mapper.ProductMapper;
 import com.ltr.mymall.pojo.Category;
 import com.ltr.mymall.pojo.Product;
 import com.ltr.mymall.pojo.ProductExample;
+import com.ltr.mymall.pojo.ProductImage;
 import com.ltr.mymall.service.CategoryService;
+import com.ltr.mymall.service.ProductImageService;
 import com.ltr.mymall.service.ProductService;
 /**
  * 
@@ -20,59 +22,70 @@ import com.ltr.mymall.service.ProductService;
 public class ProductServiceImpl implements ProductService{
 
 	@Autowired
-	ProductMapper productMapper;
-	@Autowired
+    ProductMapper productMapper;
+    @Autowired
     CategoryService categoryService;
-	
-	@Override
-	public void add(Product product) {
-		productMapper.insert(product);
-	}
-
-	@Override
-	public void delete(int id) {
-		productMapper.deleteByPrimaryKey(id);
-	}
-
-	@Override
-	public void update(Product product) {
-		productMapper.updateByPrimaryKeySelective(product);
-	}
-	
-	/*后续前端显示需要通过product定位categry信息*/
-	public void setCategory(Product product) {
-		int cid = product.getCid();
-		Category category = categoryService.get(cid);
-		product.setCategory(category);
-	}
-
-	/*后续前端显示需要通过product定位categry信息*/
-	public void setCategory(List<Product> ps) {
-		for(Product e : ps) {
-			setCategory(e);
-		}
-	}
-	
-	@Override
-	public Product get(int id) {
-		Product product = productMapper.selectByPrimaryKey(id);
-		setCategory(product);
-		return product;
-	}
-
-	@Override
-	public List list(int cid) {
-		ProductExample example = new ProductExample();
-		example.createCriteria().andCidEqualTo(cid);
-		example.setOrderByClause("id desc");
-		
-		/*为每一个product带上category*/
-		/*后续前端显示需要通过product定位categry信息*/
-		List productList = productMapper.selectByExample(example);
-		setCategory(productList);
-		
-		return productList;
-	}
+    @Autowired
+    ProductImageService productImageService;
+ 
+    @Override
+    public void add(Product p) {
+        productMapper.insert(p);
+    }
+ 
+    @Override
+    public void delete(int id) {
+        productMapper.deleteByPrimaryKey(id);
+    }
+ 
+    @Override
+    public void update(Product p) {
+        productMapper.updateByPrimaryKeySelective(p);
+    }
+ 
+    @Override
+    public Product get(int id) {
+        Product p = productMapper.selectByPrimaryKey(id);
+        setFirstProductImage(p);
+        setCategory(p);
+        return p;
+    }
+ 
+    public void setCategory(List<Product> ps){
+        for (Product p : ps)
+            setCategory(p);
+    }
+    public void setCategory(Product p){
+        int cid = p.getCid();
+        Category c = categoryService.get(cid);
+        p.setCategory(c);
+    }
+ 
+    @Override
+    public List list(int cid) {
+        ProductExample example = new ProductExample();
+        example.createCriteria().andCidEqualTo(cid);
+        example.setOrderByClause("id desc");
+        List result = productMapper.selectByExample(example);
+        setCategory(result);
+        setFirstProductImage(result);
+        return result;
+    }
+ 
+    @Override
+    public void setFirstProductImage(Product p) {
+        List<ProductImage> pis = productImageService.list(p.getId(), ProductImageService.type_single);
+        if (!pis.isEmpty()) {
+            ProductImage pi = pis.get(0);
+            p.setFirstProductImage(pi);
+        }
+    }
+ 
+    public void setFirstProductImage(List<Product> ps) {
+        for (Product p : ps) {
+            setFirstProductImage(p);
+        }
+    }
 
 }
 

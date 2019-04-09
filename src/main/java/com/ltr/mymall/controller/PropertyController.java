@@ -18,7 +18,7 @@ import com.ltr.mymall.util.Page;
  * Property数据表
  * primary key:	id
  * foreign key: cid
- * key:			name
+ * key:         name
  *
  */
 @Controller

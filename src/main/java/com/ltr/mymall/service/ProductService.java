@@ -11,4 +11,5 @@ public interface ProductService {
 	public void update(Product product);
 	public Product get(int id);
 	public List<Product> list(int cid);
+	public void setFirstProductImage(Product p);
 }
