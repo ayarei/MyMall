@@ -2,8 +2,15 @@ package com.ltr.mymall.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.ltr.mymall.mapper.ProductMapper;
+import com.ltr.mymall.mapper.PropertyMapper;
 import com.ltr.mymall.pojo.Category;
+import com.ltr.mymall.pojo.Product;
+import com.ltr.mymall.pojo.ProductExample;
+import com.ltr.mymall.pojo.Property;
+import com.ltr.mymall.pojo.PropertyExample;
 import com.ltr.mymall.service.CategoryService;
+import com.ltr.mymall.service.ProductService;
 import com.ltr.mymall.util.ImageUtil;
 import com.ltr.mymall.util.Page;
 import com.ltr.mymall.util.UploadedImageFile;
@@ -35,6 +42,11 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
     
+    @Autowired
+    ProductMapper productMapper;
+    
+    @Autowired
+    PropertyMapper propertyMapper;
     
     /**
      * 使用PageHelper分页显示
@@ -91,20 +103,50 @@ public class CategoryController {
     
     /**
      * 根据表单提交的id删除分类
+     * 
+     * 当且仅当一个分类没有属性与产品是才能删除
+     * 
+     * 否则跳到删除错误界面
      * @param id 接受表单注入的id
      * 
      */
-    @RequestMapping("admin_category_delete")
-    public String delete(int id, HttpSession session) throws IOException{
-    	categoryService.delete(id);
-    	//图片删除
-    	File imageFolder = new File(session.getServletContext().getRealPath("img/category"));
-    	File file = new File(imageFolder, id + ".jpg");
-    	file.delete();
-    	
-    	return "redirect:/admin_category_list";
-    }
-    
+	@RequestMapping("admin_category_delete")
+	public String delete(int id, HttpSession session, Model model) throws IOException {
+		
+		//标注这是一个分类删除操作
+		String delete_check = "category_delete";
+		/**
+		 * 查找分类下所有产品
+		 */
+		ProductExample product_example = new ProductExample();
+		product_example.createCriteria().andCidEqualTo(id);
+		List<Product> product_result = productMapper.selectByExample(product_example);
+
+		/**
+		 * 查找分类下所有属性
+		 */
+		PropertyExample property_example = new PropertyExample();
+		property_example.createCriteria().andCidEqualTo(id);
+		List<Property> property_result = propertyMapper.selectByExample(property_example);
+
+		if (0 == product_result.size() && 0 == property_result.size()) {
+			categoryService.delete(id);
+			// 图片删除
+			File imageFolder = new File(session.getServletContext().getRealPath("img/category"));
+			File file = new File(imageFolder, id + ".jpg");
+			file.delete();
+
+			return "redirect:/admin_category_list";
+
+		} else {
+			Category category = categoryService.get(id);
+
+			model.addAttribute("delete_instance", category);
+			model.addAttribute("delete_check", delete_check);
+			return "admin/delete_error";
+		}
+	}
+
     /**
      * 根据表单提交的id编辑分类
      * @param id 接受表单注入的id

@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.ltr.mymall.mapper.ProductMapper;
 import com.ltr.mymall.pojo.Category;
+import com.ltr.mymall.pojo.Product;
+import com.ltr.mymall.pojo.ProductExample;
 import com.ltr.mymall.pojo.Property;
 import com.ltr.mymall.service.CategoryService;
 import com.ltr.mymall.service.PropertyService;
@@ -27,8 +30,12 @@ public class PropertyController {
 
 	@Autowired
 	CategoryService categoryService;
+	
 	@Autowired
 	PropertyService propertyService;
+	
+	@Autowired
+    ProductMapper productMapper;
 	
 	/**
 	 * 在对应分类下添加属性名
@@ -42,15 +49,32 @@ public class PropertyController {
 	}
 	
 	/**
-	 * 根据表单提供的id删除分类下的属性名
+	 * 根据表单提供的分类id删除分类下的属性
 	 * @param id 接收表单提供的id
 	 * @return
 	 */
 	@RequestMapping("admin_property_delete")
-	public String delete(int id) {
+	public String delete(int id, Model model) {
+
+		//标注这是一个属性删除操作
+		String delete_check = "property_delete";
+
 		Property property = propertyService.get(id);
-		propertyService.delete(id);
-		return "redirect:admin_property_list?cid="+property.getCid();
+		Category category = categoryService.get(property.getCid());
+
+		ProductExample product_example = new ProductExample();
+		product_example.createCriteria().andCidEqualTo(category.getId());
+		List<Product> product_result = productMapper.selectByExample(product_example);
+
+		if (0 == product_result.size()) {
+			propertyService.delete(id);
+			return "redirect:admin_property_list?cid=" + property.getCid();
+		} else {
+			model.addAttribute("category", category);
+			model.addAttribute("delete_instance", property);
+			model.addAttribute("delete_check", delete_check);
+			return "admin/delete_error";
+		}
 	}
 	
 	/**
