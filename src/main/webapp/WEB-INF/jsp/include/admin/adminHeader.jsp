@@ -69,5 +69,4 @@ $(function(){
 })
 </script>	
 </head>
-<body>
 
