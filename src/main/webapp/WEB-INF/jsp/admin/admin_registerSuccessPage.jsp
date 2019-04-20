@@ -4,3 +4,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix='fmt' %> 
 <h1>注册成功</h1>
+<br/>
+<h3><a href="adminLoginPage">去登陆</a></h3>

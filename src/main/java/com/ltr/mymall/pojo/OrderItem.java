@@ -9,9 +9,20 @@ public class OrderItem {
 
     private Integer uid;
 
+    //购买的某件商品的数量
     private Integer number;
+    
+    private Product product;
 
-    public Integer getId() {
+    public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Integer getId() {
         return id;
     }
 

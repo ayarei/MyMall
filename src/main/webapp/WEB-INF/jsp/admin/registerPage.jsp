@@ -16,6 +16,11 @@ $(function(){
     </c:if>
      
     $(".registerForm").submit(function(){
+    	if(0==$("#special").val().length){
+            $("span.errorMessage").html("请输入注册码");
+            $("div.registerErrorMessageDiv").css("visibility","visible");          
+            return false;
+        }  
         if(0==$("#name").val().length){
             $("span.errorMessage").html("请输入用户名");
             $("div.registerErrorMessageDiv").css("visibility","visible");          
@@ -43,7 +48,7 @@ $(function(){
 </script>
 </head>
 
-<form method="post" action="adminregister" class="registerForm">
+<form method="post" action="adminRegister" class="registerForm">
 
 	<div class="registerDiv">
 		<div class="registerErrorMessageDiv">
@@ -56,35 +61,39 @@ $(function(){
 
 		<table class="registerTable" align="center">
 			<tr>
-				<td class="registerTip registerTableLeftTD">设置管理员名</td>
-				<td></td>
+				<td class="registerTip registerTableLeftTD" ><font
+					size="+2">注册管理员</font></td>
 			</tr>
+			<tr height="5"/>
 			<tr>
 				<td class="registerTableLeftTD">管理员注册码</td>
-				<td class="registerTableRightTD"><input id="special" name="special"
-					class="form-control" placeholder="请输入注册码"></td>
+				<td class="registerTableRightTD"><input id="special"
+					name="special" class="form-control" placeholder="请输入注册码"></td>
 			</tr>
+			<tr height="5"/>
 			<tr>
 				<td class="registerTableLeftTD">登陆名</td>
 				<td class="registerTableRightTD"><input id="name" name="name"
-					class="form-control" placeholder="登录名一旦设置成功，无法修改"></td>
+					class="form-control" placeholder="设置成功后无法修改"></td>
 			</tr>
+			<tr height="5"/>
 			<tr>
 				<td class="registerTableLeftTD">登陆密码</td>
 				<td class="registerTableRightTD"><input id="password"
 					class="form-control" name="password" type="password"
 					placeholder="设置你的登陆密码"></td>
 			</tr>
+			<tr height="5"/>
 			<tr>
 				<td class="registerTableLeftTD">密码确认</td>
 				<td class="registerTableRightTD"><input id="repeatpassword"
 					class="form-control" type="password" placeholder="请再次输入你的密码"></td>
 			</tr>
-
+			<tr height="5"/>
 			<tr>
-				<td colspan="2" class="registerButtonTD"><a
-					href="registerSuccess.jsp"><button type="submit"
-							class="btn btn-primary">提 交</button></a></td>
+				<td colspan="2" class="registerButtonTD"  align="center">
+				<button type="submit"
+							class="btn btn-primary">提 交</button></td>
 			</tr>
 		</table>
 	</div>

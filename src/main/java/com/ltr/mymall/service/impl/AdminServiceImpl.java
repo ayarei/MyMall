@@ -16,12 +16,11 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	AdminMapper adminMapper;
 
-	
 	@Override
 	public void add(Admin admin) {
 		adminMapper.insert(admin);
 	}
-	
+
 	@Override
 	public void delete(int id) {
 		adminMapper.deleteByPrimaryKey(id);
@@ -50,18 +49,25 @@ public class AdminServiceImpl implements AdminService {
 		AdminExample example = new AdminExample();
 		example.createCriteria().andNameEqualTo(name);
 		List<Admin> result = adminMapper.selectByExample(example);
-		//result不空，说明已经有同名用户
+		// result不空，说明已经有同名用户
 		if (!result.isEmpty())
 			return true;
 		return false;
 	}
 
+	/**
+	 * 登录验证
+	 */
 	@Override
 	public Admin get(String name, String password) {
 
-		return null;
+		AdminExample example = new AdminExample();
+		example.createCriteria().andNameEqualTo(name).andPasswordEqualTo(password);
+		List<Admin> result = adminMapper.selectByExample(example);
+		if (result.isEmpty()) {
+			return null;
+		}
+		return result.get(0);
 	}
-
-	
 
 }
