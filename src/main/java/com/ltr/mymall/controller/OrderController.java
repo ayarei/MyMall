@@ -29,14 +29,14 @@ public class OrderController {
 	public String list(Model model, Page page) {
 		PageHelper.offsetPage(page.getStart(), page.getCount());
 
-		List<Order> os = orderService.list();
+		List<Order> orderList = orderService.list();
 
-		int total = (int) new PageInfo<>(os).getTotal();
+		int total = (int) new PageInfo<>(orderList).getTotal();
 		page.setTotal(total);
 
-		orderItemService.fill(os);
+		orderItemService.fill(orderList);
 
-		model.addAttribute("os", os);
+		model.addAttribute("os", orderList);
 		model.addAttribute("page", page);
 
 		return "admin/listOrder";

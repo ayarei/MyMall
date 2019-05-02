@@ -1,5 +1,6 @@
 package com.ltr.mymall.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,11 +101,11 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List list(int cid) {
+	public List<Product> list(int cid) {
 		ProductExample example = new ProductExample();
 		example.createCriteria().andCidEqualTo(cid);
 		example.setOrderByClause("id desc");
-		List result = productMapper.selectByExample(example);
+		List<Product> result = productMapper.selectByExample(example);
 		setCategory(result);
 		setFirstProductImage(result);
 		return result;
@@ -125,4 +126,43 @@ public class ProductServiceImpl implements ProductService {
 		}
 	}
 
+	@Override
+	public void fill(List<Category> categories) {
+		for(Category c : categories) {
+			fill(c);
+		}
+	}
+
+	@Override
+	public void fill(Category category) {
+		List<Product> productList = list(category.getId());
+		category.setProducts(productList);
+	}
+
+	@Override
+	public void fillByRow(List<Category> categories) {
+		//八个产品为一行显示
+		int productNumberEachRow = 8;
+		for(Category c : categories) {
+			List<Product> products = c.getProducts();
+			List<List<Product>> productsByRow = new ArrayList<>();
+			for(int i = 0; i < products.size(); i+=productNumberEachRow) {
+				int size = i + productNumberEachRow;
+				size = size > products.size() ? products.size() : size;
+				List<Product> productsOfEachRow =products.subList(i, size);
+                productsByRow.add(productsOfEachRow);
+			}
+			c.setProductsByRow(productsByRow);
+		}
+	}
+
 }
+
+
+
+
+
+
+
+
+

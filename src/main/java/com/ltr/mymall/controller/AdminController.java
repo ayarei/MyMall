@@ -12,6 +12,12 @@ import org.springframework.web.util.HtmlUtils;
 import com.ltr.mymall.pojo.Admin;
 import com.ltr.mymall.service.AdminService;
 
+/**
+ * @author 刘添瑞
+ * 管理员注册与登录验证
+ * 使用MD5加密
+ * 注册码“ltr”
+ */
 @Controller
 @RequestMapping("")
 public class AdminController {
@@ -21,13 +27,13 @@ public class AdminController {
 
 	// MD5盐值
 	private final String slat = "jkdo%@*gFG%^jkG637^%UJ@fxHhsd124$%&*$TUacdF";
-
+	
 	/**
 	 * 
 	 * @param model
 	 * @param admin
-	 * @param special
-	 * 用户填写的注册码
+	 * @param special  用户填写的注册码
+	 * 注册管理员
 	 * @return
 	 */
 	@RequestMapping("adminRegister")
@@ -60,23 +66,27 @@ public class AdminController {
 		return "redirect:adminRegisterSuccessPage";
 	}
 
+	/**
+	 * 管理员登陆验证
+	 */
 	@RequestMapping("adminLogin")
 	public String loginPage(Model model, Admin admin, HttpSession session) {
-		
+
 		admin.setName(HtmlUtils.htmlEscape(admin.getName()));
 		String base = admin.getPassword() + slat;
 		String passWord = DigestUtils.md5DigestAsHex(base.getBytes());
-		
+
+		//adminService.get()：根据name与password查找管理员实例
 		Admin now = adminService.get(admin.getName(), passWord);
-		if(null == now) {
+		if (null == now) {
 			model.addAttribute("msg", "账号或密码错误");
-            return "admin/loginPage";
+			return "admin/loginPage";
 		}
 		model.addAttribute("admin", now);
 		session.setAttribute("admin", now);
 		return "redirect:admin_category_list";
 	}
-	
+
 	/**
 	 * 管理员登出
 	 */

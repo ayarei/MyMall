@@ -52,6 +52,10 @@ public class OrderItemServiceImpl implements OrderItemService {
 		return orderItemMapper.selectByExample(example);
 	}
 
+	/**
+	 * MyBatis的逆向工程没有一对多的关系
+	 * 所以这里使用集合进行二次开发
+	 */
 	@Override
 	public void fill(List<Order> os) {
 		for (Order o : os) {

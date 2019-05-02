@@ -23,6 +23,11 @@ public class AdminTransferPageController {
 		return "admin/registerPage";
 	}
 	
+	/**
+	 * 访问登录页面时查看session是否有admin的对象
+	 * 如果有则直接跳转到此admin的后台
+	 * 如果没有则进行登录 
+	 */
 	@RequestMapping("adminLoginPage")
 	public String adminLogin(HttpServletRequest request,
 												HttpServletResponse response) throws Exception{

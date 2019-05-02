@@ -1,9 +1,35 @@
 package com.ltr.mymall.pojo;
 
+import java.util.List;
+
 public class Category {
     private Integer id;
 
     private String name;
+
+    /**
+     * 在前台分类列表中，一个分类列表下有其他分类列表
+     * 所以需要这两个字段
+     */
+    private List<Product> products;
+    
+    private List<List<Product>> productByRow;
+    
+    public List<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Product> products) {
+		this.products = products;
+	}
+
+	public List<List<Product>> getProductByRow() {
+		return productByRow;
+	}
+
+	public void setProductsByRow(List<List<Product>> productByRow) {
+		this.productByRow = productByRow;
+	}
 
     public Integer getId() {
         return id;
