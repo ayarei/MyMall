@@ -26,7 +26,7 @@ public class AdminController {
 	AdminService adminService;
 
 	// MD5盐值
-	private final String slat = "jkdo%@*gFG%^jkG637^%UJ@fxHhsd124$%&*$TUacdF";
+	private static final String slat = "jkdo%@*gFG%^jkG637^%UJ@fxHhsd124$%&*$TUacdF";
 	
 	/**
 	 * 

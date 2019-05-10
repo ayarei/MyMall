@@ -13,7 +13,7 @@ public class Category {
      */
     private List<Product> products;
     
-    private List<List<Product>> productByRow;
+    private List<List<Product>> productsByRow;
     
     public List<Product> getProducts() {
 		return products;
@@ -23,12 +23,12 @@ public class Category {
 		this.products = products;
 	}
 
-	public List<List<Product>> getProductByRow() {
-		return productByRow;
+	public List<List<Product>> getProductsByRow() {
+		return productsByRow;
 	}
 
 	public void setProductsByRow(List<List<Product>> productByRow) {
-		this.productByRow = productByRow;
+		this.productsByRow = productByRow;
 	}
 
     public Integer getId() {
