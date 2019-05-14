@@ -67,7 +67,7 @@ public class AdminController {
 	}
 
 	/**
-	 * 管理员登陆验证
+	 * 管理员登录验证
 	 */
 	@RequestMapping("adminLogin")
 	public String loginPage(Model model, Admin admin, HttpSession session) {

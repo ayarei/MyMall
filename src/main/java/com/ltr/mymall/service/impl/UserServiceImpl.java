@@ -11,15 +11,15 @@ import com.ltr.mymall.pojo.UserExample;
 import com.ltr.mymall.service.UserService;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserMapper userMapper;
-	
+
 	@Override
 	public void add(User user) {
 		userMapper.insert(user);
-		
+
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User get(int id) {
-		
+
 		return userMapper.selectByPrimaryKey(id);
 	}
 
@@ -45,7 +45,35 @@ public class UserServiceImpl implements UserService{
 		return userMapper.selectByExample(example);
 	}
 
+	@Override
+	public boolean isExist(String name) {
+		UserExample example = new UserExample();
+		example.createCriteria().andNameEqualTo(name);
+		List<User> userList = userMapper.selectByExample(example);
+		if (userList.isEmpty()) {
+			return false;
+		}
+		return true;
+
+	}
+
+	@Override
+	public User get(String name, String password) {
+		UserExample example = new UserExample();
+		example.createCriteria().andNameEqualTo(name).andPasswordEqualTo(password);
+		
+		List<User> userList = userMapper.selectByExample(example);
+		
+		if(userList.isEmpty()) {
+			return null;
+		}
+		return userList.get(0);
+	}
+
 }
+
+
+
 
 
 

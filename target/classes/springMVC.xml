@@ -35,7 +35,7 @@
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 	<mvc:interceptors>
 		<mvc:interceptor>
-			<!-- 后台管理员登陆拦截器 -->
+			<!-- 后台管理员登录拦截器 -->
 			<mvc:mapping path="/admin_*" />
 			<bean class="com.ltr.mymall.interceptor.AdminLoginInterceptor" />
 		</mvc:interceptor>

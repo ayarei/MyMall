@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <nav class="top ">
-	<a href="${contextPath}"> <span style="color: #C40000; margin: 0px"
+	<a href="forehome"> <span style="color: #C40000; margin: 0px"
 		class=" glyphicon glyphicon-home redColor"></span> 天猫首页
 	</a> <span>喵，欢迎来天猫</span>
 

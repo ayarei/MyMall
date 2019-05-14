@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.ltr.mymall.pojo.Admin;
 
 /**
- * 这个控制器用于管理员页面的登陆跳转
+ * 后台管理员注册登录跳转控制器
  * @author 刘添瑞
  *
  */

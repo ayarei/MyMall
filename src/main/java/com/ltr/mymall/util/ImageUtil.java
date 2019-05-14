@@ -32,7 +32,6 @@ public class ImageUtil {
             BufferedImage img = new BufferedImage(RGB_OPAQUE, raster, false, null);
             return img;
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         }
@@ -46,7 +45,6 @@ public class ImageUtil {
             i = resizeImage(i, width, height);
             ImageIO.write((RenderedImage) i, "jpg", destFile);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -60,7 +58,6 @@ public class ImageUtil {
   
             return buffImg;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;

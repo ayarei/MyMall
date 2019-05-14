@@ -11,7 +11,7 @@ import com.ltr.mymall.pojo.Admin;
 
 /**
  * @author 刘添瑞 
- * 管理员登陆拦截器 
+ * 管理员登录拦截器 
  * 拦截所有“admin_”开头的uri
  *
  */

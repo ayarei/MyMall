@@ -11,4 +11,8 @@ public interface UserService {
 	
 	public User get(int id);
 	public List<User> list();
+	
+	public boolean isExist(String name);
+	
+	public User get(String name, String password);
 }

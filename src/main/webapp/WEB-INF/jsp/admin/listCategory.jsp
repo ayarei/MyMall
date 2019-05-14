@@ -6,8 +6,7 @@
 <%@include file="../include/admin/adminNavigator.jsp"%>
  
 <script>
-$(function(){
-     
+$(function(){   
     $("#addForm").submit(function(){
         if(!checkEmpty("name","分类名称"))
             return false;
@@ -19,7 +18,7 @@ $(function(){
  
 </script>
  
-<title>分类管理</title>
+<title>后台分类管理</title>
  
 <div class="workingArea">
     <h1 class="label label-info" >分类管理</h1>

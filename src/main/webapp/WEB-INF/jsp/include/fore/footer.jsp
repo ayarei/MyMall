@@ -14,7 +14,7 @@
 
 	<div id="footer_desc" class="footer_desc">
 		<div class="descColumn">
-			<span class="descColumnTitle">购物指南</span> <a href="#nowhere">免费注册</a>
+			<span class="descColumnTitle">购物指南</span> <a href="registerPage">免费注册</a>
 			<a href="#nowhere">开通支付宝</a> <a href="#nowhere">支付宝充值</a>
 		</div>
 		<div class="descColumn">
