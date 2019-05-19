@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.alibaba.druid.stat.TableStat.Mode;
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ltr.mymall.pojo.Order;
@@ -35,7 +35,9 @@ public class OrderController {
 		page.setTotal(total);
 
 		orderItemService.fill(orderList);
-
+		
+		System.out.println(orderList);
+		
 		model.addAttribute("os", orderList);
 		model.addAttribute("page", page);
 

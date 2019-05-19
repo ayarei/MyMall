@@ -93,7 +93,46 @@ public class OrderItemServiceImpl implements OrderItemService {
 	}
 
 	private void setProduct(OrderItem oi) {
-		Product product = productService.get(oi.getId());
+		Product product = productService.get(oi.getPid());
 		oi.setProduct(product);
 	}
+
+	/**
+	 * 计算销量
+	 */
+	// TODO 不能以加入购物车来算销量，更改为创建订单后才加入销量
+	@Override
+	public int getSaleCount(int pid) {
+		OrderItemExample example = new OrderItemExample();
+		example.createCriteria().andPidEqualTo(pid);
+		List<OrderItem> ois = orderItemMapper.selectByExample(example);
+		int count = 0;
+		for (OrderItem e : ois) {
+			count += e.getNumber();
+		}
+		return count;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

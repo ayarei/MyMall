@@ -12,8 +12,19 @@ public class Review {
     private Integer pid;
 
     private Date createDate;
+    
+    private User user;
+    
 
-    public Integer getId() {
+    public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Integer getId() {
         return id;
     }
 

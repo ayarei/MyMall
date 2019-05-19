@@ -13,10 +13,7 @@ import com.ltr.mymall.pojo.Admin;
 import com.ltr.mymall.service.AdminService;
 
 /**
- * @author 刘添瑞
- * 管理员注册与登录验证
- * 使用MD5加密
- * 注册码“ltr”
+ * @author 刘添瑞 管理员注册与登录验证 使用MD5加密 注册码“ltr”
  */
 @Controller
 @RequestMapping("")
@@ -27,13 +24,12 @@ public class AdminController {
 
 	// MD5盐值
 	private static final String slat = "jkdo%@*gFG%^jkG637^%UJ@fxHhsd124$%&*$TUacdF";
-	
+
 	/**
 	 * 
 	 * @param model
 	 * @param admin
-	 * @param special  用户填写的注册码
-	 * 注册管理员
+	 * @param special 用户填写的注册码 注册管理员
 	 * @return
 	 */
 	@RequestMapping("adminRegister")
@@ -76,7 +72,7 @@ public class AdminController {
 		String base = admin.getPassword() + slat;
 		String passWord = DigestUtils.md5DigestAsHex(base.getBytes());
 
-		//adminService.get()：根据name与password查找管理员实例
+		// adminService.get()：根据name与password查找管理员实例
 		Admin now = adminService.get(admin.getName(), passWord);
 		if (null == now) {
 			model.addAttribute("msg", "账号或密码错误");
@@ -91,29 +87,9 @@ public class AdminController {
 	 * 管理员登出
 	 */
 	@RequestMapping("adminLogout")
-	public String logoutPage( HttpSession session) {
-        session.removeAttribute("admin");
-        return "redirect:admin_login";
-    }
+	public String logoutPage(HttpSession session) {
+		session.removeAttribute("admin");
+		return "redirect:admin_login";
+	}
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -19,4 +19,7 @@ public interface ProductService {
 	public void fill(Category category);
 	//为多个分类填充“推荐产品集合”
 	public void fillByRow(List<Category> categories);
+	//为产品对象设置评论数量与销量
+	public void setReviewAndSaleNumber(Product product);
+	public void setReviewAndSaleNumber(List<Product> productList);
 }

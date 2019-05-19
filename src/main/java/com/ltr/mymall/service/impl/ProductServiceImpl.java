@@ -14,9 +14,11 @@ import com.ltr.mymall.pojo.ProductExample;
 import com.ltr.mymall.pojo.ProductImage;
 import com.ltr.mymall.pojo.ProductImageExample;
 import com.ltr.mymall.service.CategoryService;
+import com.ltr.mymall.service.OrderItemService;
 import com.ltr.mymall.service.ProductImageService;
 import com.ltr.mymall.service.ProductService;
 import com.ltr.mymall.service.PropertyValueService;
+import com.ltr.mymall.service.ReviewService;
 
 /**
  * 
@@ -39,6 +41,12 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Autowired
 	volatile ProductImageMapper productImageMapper;
+	
+	@Autowired
+	OrderItemService orderItemService;
+	
+	@Autowired
+	ReviewService reviewService;
 
 	@Override
 	public void add(Product p) {
@@ -141,21 +149,41 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public void fillByRow(List<Category> categories) {
-		//八个产品为一行显示
+		// 八个产品为一行显示
 		int productNumberEachRow = 8;
-		for(Category c : categories) {
+		for (Category c : categories) {
 			List<Product> products = c.getProducts();
 			List<List<Product>> productsByRow = new ArrayList<>();
-			for(int i = 0; i < products.size(); i+=productNumberEachRow) {
+			for (int i = 0; i < products.size(); i += productNumberEachRow) {
 				int size = i + productNumberEachRow;
 				size = size > products.size() ? products.size() : size;
-				List<Product> productsOfEachRow =products.subList(i, size);
-                productsByRow.add(productsOfEachRow);
+				List<Product> productsOfEachRow = products.subList(i, size);
+				productsByRow.add(productsOfEachRow);
 			}
 			c.setProductsByRow(productsByRow);
 		}
 	}
 
+	/**
+	 * 为产品对象带上评论总数与销量
+	 */
+	@Override
+	public void setReviewAndSaleNumber(Product product) {
+		int saleCount = orderItemService.getSaleCount(product.getId());
+		int reviewCount = reviewService.getCount(product.getId());
+		
+		product.setSaleCount(saleCount);
+		product.setReviewCount(reviewCount);
+	}
+
+	@Override
+	public void setReviewAndSaleNumber(List<Product> productList) {
+		for(Product e : productList) {
+			setReviewAndSaleNumber(e);
+		}
+	}
+
+	
 }
 
 

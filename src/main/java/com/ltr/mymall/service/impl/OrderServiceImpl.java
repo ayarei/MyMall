@@ -49,11 +49,11 @@ public class OrderServiceImpl implements OrderService{
 		setUser(result);
 		return result;
 	}
-	public 
-	void setUser(List<Order> os){
-        for (Order o : os)
-            setUser(o);
-    }
+
+	public void setUser(List<Order> os) {
+		for (Order o : os)
+			setUser(o);
+	}
     public void setUser(Order o){
         int uid = o.getUid();
         User u = userService.get(uid);

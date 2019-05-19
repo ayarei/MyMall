@@ -30,4 +30,47 @@ public class User {
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
     }
+    
+    /**
+     * 支持匿名评价
+     * 匿名部分用“*”代替
+     */
+    public String getAnonymousName() {
+    	if(null == name) {
+    		return null;
+    	}
+    	
+    	if(name.length()<=1) {
+    		return "*";
+    	}
+    	
+    	if(name.length()==2) {
+    		return name.substring(0,1) + "*";
+    	}
+    	
+    	char[] anonymousName = new char[6];
+    	anonymousName[0] = name.charAt(0);
+    	anonymousName[5] = name.charAt(name.length()-1);
+    	for(int i = 1; i < 5; i++) {
+    		anonymousName[i] = '*';
+    	}
+    	return new String(anonymousName);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -30,30 +30,30 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
+
 /**
- * Category数据表表
- * primary key:	id
- * key:			name
+ * Category数据表表 primary key: id key: name
  *
  */
 @Controller
 @RequestMapping("")
 public class CategoryController {
-    @Autowired
-    CategoryService categoryService;
-    
-    @Autowired
-    ProductMapper productMapper;
-    
-    @Autowired
-    PropertyMapper propertyMapper;
-    
-    /**
-     * 使用PageHelper分页显示
-     * @param model
-     * @param page 获取页面相关数据
-     * @return
-     */
+	@Autowired
+	CategoryService categoryService;
+
+	@Autowired
+	ProductMapper productMapper;
+
+	@Autowired
+	PropertyMapper propertyMapper;
+
+	/**
+	 * 使用PageHelper分页显示
+	 * 
+	 * @param model
+	 * @param page  获取页面相关数据
+	 * @return
+	 */
 	@RequestMapping("admin_category_list")
 	public String list(Model model, Page page) {
 		PageHelper.offsetPage(page.getStart(), page.getCount());
@@ -65,16 +65,16 @@ public class CategoryController {
 		model.addAttribute("page", page);
 		return "admin/listCategory";
 	}
-    
-   
-    /**
-     * 添加分类、上传分类图片
-     * @param category 接受页面提交的分类名
-     * @param session  获取当前应用的路径
-     * @param uploadedImageFile 接收上传的图片
-     * @throws IOException
-     * 
-     */
+
+	/**
+	 * 添加分类、上传分类图片
+	 * 
+	 * @param category          接受页面提交的分类名
+	 * @param session           获取当前应用的路径
+	 * @param uploadedImageFile 接收上传的图片
+	 * @throws IOException
+	 * 
+	 */
 	@RequestMapping("admin_category_add")
 	public String add(Category category, HttpSession session, UploadedImageFile uploadedImageFile) throws IOException {
 		categoryService.add(category);
@@ -100,16 +100,17 @@ public class CategoryController {
 
 		return "redirect:/admin_category_list";
 	}
-    
-    /**
-     * 根据表单提交的id删除分类
-     * 
-     * 当且仅当一个分类没有属性与产品是才能删除
-     * 
-     * 否则跳到删除错误界面
-     * @param id 接受表单注入的id
-     * 
-     */
+
+	/**
+	 * 根据表单提交的id删除分类
+	 * 
+	 * 当且仅当一个分类没有属性与产品是才能删除
+	 * 
+	 * 否则跳到删除错误界面
+	 * 
+	 * @param id 接受表单注入的id
+	 * 
+	 */
 	@RequestMapping("admin_category_delete")
 	public String delete(int id, HttpSession session, Model model) throws IOException {
 
@@ -147,11 +148,12 @@ public class CategoryController {
 		}
 	}
 
-    /**
-     * 根据表单提交的id编辑分类
-     * @param id 接受表单注入的id
-     * 
-     */
+	/**
+	 * 根据表单提交的id编辑分类
+	 * 
+	 * @param id 接受表单注入的id
+	 * 
+	 */
 	@RequestMapping("admin_category_edit")
 	public String edit(Model model, int id) {
 		Category category = categoryService.get(id);
@@ -159,15 +161,16 @@ public class CategoryController {
 		model.addAttribute("c", category);
 		return "admin/editCategory";
 	}
-    
-    /**
-     * 更新数据
-     * @param category  接受表单注入的分类信息
-     * @param session  获取当前应用路径
-     * @param uploadedImageFile 接收上传的图片
-     * @return
-     * @throws IOException
-     */
+
+	/**
+	 * 更新数据
+	 * 
+	 * @param category          接受表单注入的分类信息
+	 * @param session           获取当前应用路径
+	 * @param uploadedImageFile 接收上传的图片
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping("admin_category_update")
 	public String update(Category category, HttpSession session, UploadedImageFile uploadedImageFile)
 			throws IOException {
@@ -187,36 +190,3 @@ public class CategoryController {
 		return "redirect:/admin_category_list";
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

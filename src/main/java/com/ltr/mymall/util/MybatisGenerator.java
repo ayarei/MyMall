@@ -22,12 +22,16 @@ import java.util.List;
   *
   *且本程序只应该执行一次，若再次执行会覆盖上一次的文件，也会覆盖其中的修改
   *
+  *可以在generatorConfig.xml设置需要生成的表
+  *
   *若要再次执行需要修改{@param today}为当天的时间
   *
   */
 public class MybatisGenerator {
  
     public static void main(String[] args) throws Exception {
+    	
+    	/*————修改成当前时间以执行————*/
         String today = "2019-4-2";
  
         SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd");

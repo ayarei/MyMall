@@ -1,29 +1,70 @@
 package com.ltr.mymall.pojo;
 
 import java.util.Date;
+import java.util.List;
 
 public class Product {
-    private Integer id;
+	private Integer id;
 
-    private String name;
+	private String name;
 
-    private String subTitle;
+	private String subTitle;
 
-    private Float originalPrice;
+	private Float originalPrice;
 
-    private Float promotePrice;
+	private Float promotePrice;
 
-    private Integer stock;
+	private Integer stock;
 
-    private Integer cid;
+	private Integer cid;
 
-    private Date createDate;
+	private Date createDate;
 
-    private Category  category;
-    
-    private ProductImage firstProductImage;
-    
-    public ProductImage getFirstProductImage() {
+	private Category category;
+
+	private ProductImage firstProductImage;
+
+	private List<ProductImage> productSingleImages;
+
+	private List<ProductImage> productDetailImages;
+
+	private int saleCount;
+
+	private int reviewCount;
+
+	public List<ProductImage> getProductSingleImages() {
+		return productSingleImages;
+	}
+
+	public void setProductSingleImages(List<ProductImage> productSingleImages) {
+		this.productSingleImages = productSingleImages;
+	}
+
+	public List<ProductImage> getProductDetailImages() {
+		return productDetailImages;
+	}
+
+	public void setProductDetailImages(List<ProductImage> productDetailImages) {
+		this.productDetailImages = productDetailImages;
+	}
+
+	public int getSaleCount() {
+		return saleCount;
+	}
+
+	public void setSaleCount(int saleCount) {
+		this.saleCount = saleCount;
+	}
+
+	public int getReviewCount() {
+		return reviewCount;
+	}
+
+	public void setReviewCount(int reviewCount) {
+		this.reviewCount = reviewCount;
+	}
+
+	public ProductImage getFirstProductImage() {
 		return firstProductImage;
 	}
 
@@ -31,77 +72,75 @@ public class Product {
 		this.firstProductImage = firstProductImage;
 	}
 
-	
-    
-    public Category getCategory() {
-        return category;
-    }
- 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-    
-    public Integer getId() {
-        return id;
-    }
+	public Category getCategory() {
+		return category;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setCategory(Category category) {
+		this.category = category;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getSubTitle() {
-        return subTitle;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle == null ? null : subTitle.trim();
-    }
+	public void setName(String name) {
+		this.name = name == null ? null : name.trim();
+	}
 
-    public Float getOriginalPrice() {
-        return originalPrice;
-    }
+	public String getSubTitle() {
+		return subTitle;
+	}
 
-    public void setOriginalPrice(Float originalPrice) {
-        this.originalPrice = originalPrice;
-    }
+	public void setSubTitle(String subTitle) {
+		this.subTitle = subTitle == null ? null : subTitle.trim();
+	}
 
-    public Float getPromotePrice() {
-        return promotePrice;
-    }
+	public Float getOriginalPrice() {
+		return originalPrice;
+	}
 
-    public void setPromotePrice(Float promotePrice) {
-        this.promotePrice = promotePrice;
-    }
+	public void setOriginalPrice(Float originalPrice) {
+		this.originalPrice = originalPrice;
+	}
 
-    public Integer getStock() {
-        return stock;
-    }
+	public Float getPromotePrice() {
+		return promotePrice;
+	}
 
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
+	public void setPromotePrice(Float promotePrice) {
+		this.promotePrice = promotePrice;
+	}
 
-    public Integer getCid() {
-        return cid;
-    }
+	public Integer getStock() {
+		return stock;
+	}
 
-    public void setCid(Integer cid) {
-        this.cid = cid;
-    }
+	public void setStock(Integer stock) {
+		this.stock = stock;
+	}
 
-    public Date getCreateDate() {
-        return createDate;
-    }
+	public Integer getCid() {
+		return cid;
+	}
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
+	public void setCid(Integer cid) {
+		this.cid = cid;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
 }
