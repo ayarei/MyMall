@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import com.ltr.mymall.pojo.Category;
@@ -69,31 +71,34 @@ public class ForeController {
 		return "fore/home";
 
 	}
-	
+
 	/**
 	 * 进入产品详情页
+	 * 
 	 * @param pid
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping("foreproduct")
-	public String product(int pid,Model model) {
+	public String product(int pid, Model model) {
 		Product product = productService.get(pid);
-		
-		List<ProductImage> productSingleImages = productImageService.list(product.getId(), productImageService.type_single);
-		List<ProductImage> productDetailImages = productImageService.list(product.getId(), productImageService.type_detail);
-	
+
+		List<ProductImage> productSingleImages = productImageService.list(product.getId(),
+				productImageService.type_single);
+		List<ProductImage> productDetailImages = productImageService.list(product.getId(),
+				productImageService.type_detail);
+
 		product.setProductSingleImages(productSingleImages);
 		product.setProductDetailImages(productDetailImages);
-		
+
 		List<PropertyValue> propertyValueList = propertyValueService.list(product.getId());
 		List<Review> reviewList = reviewSerive.list(product.getId());
 		productService.setReviewAndSaleNumber(product);
-		model.addAttribute("reviews",reviewList);
+		model.addAttribute("reviews", reviewList);
 		model.addAttribute("p", product);
 		model.addAttribute("pvs", propertyValueList);
 		return "fore/product";
-	
+
 	}
 
 	/**
@@ -128,6 +133,7 @@ public class ForeController {
 
 	/**
 	 * 用户登录
+	 * 
 	 * @param model
 	 * @param user
 	 * @param session
@@ -143,16 +149,17 @@ public class ForeController {
 
 		if (null == now) {
 			model.addAttribute("msg", "账号或密码错误，请重新输入");
-			return "fore/login"; 
+			return "fore/login";
 		}
 
 		model.addAttribute("user", now);
 		session.setAttribute("user", now);
-		return "redirect:forehome"; 
+		return "redirect:forehome";
 	}
-	
+
 	/**
 	 * 用户登出
+	 * 
 	 * @param session
 	 * @return
 	 */
@@ -161,16 +168,45 @@ public class ForeController {
 		session.removeAttribute("user");
 		return "redirect:forehome";
 	}
-	
 
+	/**
+	 * 未登录时直接购买或者加入购物车时检查是否登录
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("forecheckLogin")
+	@ResponseBody
+	public String checkLogin(HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		if (null != user) {
+			return "success";
+		}
+		return "fail";
+	}
+
+	/**
+	 * 模态页面登录检查
+	 * @param name
+	 * @param password
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("foreloginAjax")
+	@ResponseBody
+	public String loginAjax (@RequestParam("name") String name,@RequestParam("password") String password,HttpSession session) {
+		String base = password+slat;
+		name = HtmlUtils.htmlEscape(name);
+		password = DigestUtils.md5DigestAsHex(base.getBytes());
+		
+		User user = userService.get(name, password);
+		if(null == user) {
+			return "fail";
+		}
+		session.setAttribute("user", user);
+		return "success";
+		
+	}
 }
-
-
-
-
-
-
-
 
 
 

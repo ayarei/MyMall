@@ -5,11 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <script>
 	$(function() {
-		var stock = $
-		{
-			p.stock
-		}
-		;
+		var stock = ${p.stock};
 		$(".productNumberSetting").keyup(function() {
 			var num = $(".productNumberSetting").val();
 			num = parseInt(num);
@@ -36,20 +32,17 @@
 				num = 1;
 			$(".productNumberSetting").val(num);
 		});
-
+		//加入购物车时Ajax请求“forecheckLogin”判断是否已经登录
+		//相应函数返回“fail”表示未登录，返回“success”表示已经登录
 		$(".addCartLink").click(
 				function() {
 					var page = "forecheckLogin";
-					$.get(page, function(result) {
+					$.post(page, function(result) {
 						if ("success" == result) {
-							var pid = $
-							{
-								p.id
-							}
-							;
+							var pid = ${p.id};
 							var num = $(".productNumberSetting").val();
 							var addCartpage = "foreaddCart";
-							$.get(addCartpage, {
+							$.post(addCartpage, {
 								"pid" : pid,
 								"num" : num
 							}, function(result) {
@@ -73,9 +66,11 @@
 					});
 					return false;
 				});
+		//购买时Ajax请求“forecheckLogin”判断是否已经登录
+		//相应函数返回“fail”表示未登录，返回“success”表示已经登录
 		$(".buyLink").click(function() {
 			var page = "forecheckLogin";
-			$.get(page, function(result) {
+			$.post(page, function(result) {
 				if ("success" == result) {
 					var num = $(".productNumberSetting").val();
 					location.href = $(".buyLink").attr("href") + "&num=" + num;
@@ -97,7 +92,7 @@
 			}
 
 			var page = "foreloginAjax";
-			$.get(page, {
+			$.post(page, {
 				"name" : name,
 				"password" : password
 			}, function(result) {
