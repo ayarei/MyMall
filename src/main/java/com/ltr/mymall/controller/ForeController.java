@@ -1,5 +1,7 @@
 package com.ltr.mymall.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -13,6 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.ltr.mymall.comparator.ProductAllComparator;
+import com.ltr.mymall.comparator.ProductDateComparator;
+import com.ltr.mymall.comparator.ProductPriceComparator;
+import com.ltr.mymall.comparator.ProductReviewComparator;
+import com.ltr.mymall.comparator.ProductSaleCountComparator;
 import com.ltr.mymall.pojo.Category;
 import com.ltr.mymall.pojo.Product;
 import com.ltr.mymall.pojo.ProductImage;
@@ -27,6 +36,7 @@ import com.ltr.mymall.service.ProductService;
 import com.ltr.mymall.service.PropertyValueService;
 import com.ltr.mymall.service.ReviewService;
 import com.ltr.mymall.service.UserService;
+import com.ltr.mymall.util.Page;
 
 /**
  * 前台页面Controller
@@ -84,9 +94,9 @@ public class ForeController {
 		Product product = productService.get(pid);
 
 		List<ProductImage> productSingleImages = productImageService.list(product.getId(),
-				productImageService.type_single);
+				ProductImageService.type_single);
 		List<ProductImage> productDetailImages = productImageService.list(product.getId(),
-				productImageService.type_detail);
+				ProductImageService.type_detail);
 
 		product.setProductSingleImages(productSingleImages);
 		product.setProductDetailImages(productDetailImages);
@@ -99,6 +109,98 @@ public class ForeController {
 		model.addAttribute("pvs", propertyValueList);
 		return "fore/product";
 
+	}
+
+	/**
+	 * 前台产品页排序
+	 * 
+	 * @param cid
+	 * @param sort 
+	 * review：    评论数倒序 
+	 * saleCount： 销量倒序 
+	 * date：      上架时间倒序 
+	 * price：     价格正序 
+	 * all：       销量*评论数倒序
+	 * 
+	 * @return
+	 */
+	@RequestMapping("forecategory")
+	public String foreCategory(int cid, String sort, Model model, Page page) {
+		// 设置分类页每页显示的产品数
+		final int productCount = 2;
+
+		// 默认情况下排序
+		if (null == sort) {
+
+			page.setCount(productCount);
+
+			Category category = categoryService.get(cid);
+			PageHelper.offsetPage(page.getStart(), page.getCount());
+			List<Product> products = productService.list(cid);
+			int total = (int) new PageInfo<>(products).getTotal();
+
+			category.setProducts(products);
+			page.setParam("cid=" + category.getId() + "&");
+			productService.setReviewAndSaleNumber(category.getProducts());
+
+			page.setTotal(total);
+			model.addAttribute("c", category);
+			model.addAttribute("page", page);
+			return "fore/category";
+
+			// 条件排序
+		} else {
+			Category category = categoryService.get(cid);
+			List<Product> products = productService.list(cid);
+			List<Product> foreShow = new ArrayList<Product>(productCount);
+			int total = products.size();
+			page.setCount(productCount);
+			page.setTotal(total);
+
+			switch (sort) {
+			case "review":
+				Collections.sort(products, new ProductReviewComparator());
+				page.setParam("cid=" + category.getId() + "&sort=review&");
+				break;
+			case "date":
+				Collections.sort(products, new ProductDateComparator());
+				page.setParam("cid=" + category.getId() + "&sort=date&");
+				break;
+
+			case "saleCount":
+				Collections.sort(products, new ProductSaleCountComparator());
+				page.setParam("cid=" + category.getId() + "&sort=saleCount&");
+				break;
+
+			case "price":
+				Collections.sort(products, new ProductPriceComparator());
+				page.setParam("cid=" + category.getId() + "&sort=price&");
+				break;
+
+			case "all":
+				Collections.sort(products, new ProductAllComparator());
+				page.setParam("cid=" + category.getId() + "&sort=all&");
+				break;
+			}
+			/**
+			 * 分段截取全表查询的数据
+			 * 注意边界情况
+			 */
+			if (page.getStart() + productCount <= total) {
+				for (int i = page.getStart(); i < page.getStart() + productCount; i++)
+					foreShow.add(products.get(i));
+			} else {
+				for (int i = page.getStart(); i < page.getStart() + total % productCount; i++)
+					foreShow.add(products.get(i));
+			}
+
+			category.setProducts(foreShow);
+			productService.setReviewAndSaleNumber(category.getProducts());
+			model.addAttribute("c", category);
+			model.addAttribute("page", page);
+			return "fore/category";
+
+		}
 	}
 
 	/**
@@ -171,6 +273,7 @@ public class ForeController {
 
 	/**
 	 * 未登录时直接购买或者加入购物车时检查是否登录
+	 * 
 	 * @param session
 	 * @return
 	 */
@@ -186,6 +289,7 @@ public class ForeController {
 
 	/**
 	 * 模态页面登录检查
+	 * 
 	 * @param name
 	 * @param password
 	 * @param session
@@ -193,31 +297,18 @@ public class ForeController {
 	 */
 	@RequestMapping("foreloginAjax")
 	@ResponseBody
-	public String loginAjax (@RequestParam("name") String name,@RequestParam("password") String password,HttpSession session) {
-		String base = password+slat;
+	public String loginAjax(@RequestParam("name") String name, @RequestParam("password") String password,
+			HttpSession session) {
+		String base = password + slat;
 		name = HtmlUtils.htmlEscape(name);
 		password = DigestUtils.md5DigestAsHex(base.getBytes());
-		
+
 		User user = userService.get(name, password);
-		if(null == user) {
+		if (null == user) {
 			return "fail";
 		}
 		session.setAttribute("user", user);
 		return "success";
-		
 	}
+	// TODO 前台分类页面，商品比较比较（综合、价格、人气、销量），分页。
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

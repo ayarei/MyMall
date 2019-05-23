@@ -1,16 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" isELIgnored="false"%>
- 
-<title>MyMall产品页-${p.name}</title>
+	pageEncoding="UTF-8" isELIgnored="false"%>
+
+<title>MyMall-${p.name}</title>
 <div class="categoryPictureInProductPageDiv">
-    <img class="categoryPictureInProductPage" src="img/category/${p.category.id}.jpg">
+	<img class="categoryPictureInProductPage"
+		src="img/category/${p.category.id}.jpg">
 </div>
- 
+
 <div class="productPageDiv">
- 
-    <%@include file="imgAndInfo.jsp" %>
-     
-    <%@include file="productReview.jsp" %>
-     
-    <%@include file="productDetail.jsp" %>
+
+	<%@include file="imgAndInfo.jsp"%>
+
+	<%@include file="productReview.jsp"%>
+
+	<%@include file="productDetail.jsp"%>
 </div>

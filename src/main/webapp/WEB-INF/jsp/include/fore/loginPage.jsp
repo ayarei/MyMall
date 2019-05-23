@@ -31,7 +31,7 @@
 <div id="loginDiv" style="position: relative">
 
 	<div class="simpleLogo">
-		<a href="${contextPath}"><img src="img/site/simpleLogo.png"></a>
+		<a href="forehome"><img src="img/site/simpleLogo.png"></a>
 	</div>
 
 	<img id="loginBackgroundImg" class="loginBackgroundImg"

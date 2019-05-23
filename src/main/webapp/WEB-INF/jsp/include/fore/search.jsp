@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<a href="${contextPath}"> <img id="logo" src="img/site/logo.gif"
+<a href="#nowhere"> <img id="logo" src="img/site/logo.gif"
 	class="logo">
 </a>
 

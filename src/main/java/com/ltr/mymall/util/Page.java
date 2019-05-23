@@ -25,6 +25,7 @@ public class Page {
     public Page (){
         count = defaultCount;
     }
+    
     public Page(int start, int count) {
         this();
         this.start = start;

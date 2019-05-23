@@ -97,7 +97,7 @@ CREATE TABLE orderitem (
 
 CREATE TABLE admin_list (
   id int(11) NOT NULL AUTO_INCREMENT,
-  name varchar(255) DEFAULT NUll,
+  name varchar(255) DEFAULT NULL,
   password varchar(255) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY idx_name (name)

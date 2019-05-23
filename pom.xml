@@ -28,7 +28,7 @@
   </properties>
  
   <dependencies>
- 
+ 	<!-- SSM相关 -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
