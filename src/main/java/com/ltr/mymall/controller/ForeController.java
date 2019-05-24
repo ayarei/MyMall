@@ -148,7 +148,7 @@ public class ForeController {
 			model.addAttribute("page", page);
 			return "fore/category";
 
-			// 条件排序
+		// 条件排序
 		} else {
 			Category category = categoryService.get(cid);
 			List<Product> products = productService.list(cid);
@@ -203,6 +203,22 @@ public class ForeController {
 		}
 	}
 
+	/**
+	 * 前台搜索功能，截取满足条件的前20个产品
+	 * @param keyword 搜索关键字
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("foresearch")
+	public String foresearch(String keyword, Model model) {
+		PageHelper.offsetPage(0, 20);
+		List<Product> productList = productService.search(keyword);
+		productService.setReviewAndSaleNumber(productList);
+		model.addAttribute("ps", productList);
+		return "fore/searchResult";
+	}
+	
+	
 	/**
 	 * 用户注册
 	 * 
@@ -310,5 +326,4 @@ public class ForeController {
 		session.setAttribute("user", user);
 		return "success";
 	}
-	// TODO 前台分类页面，商品比较比较（综合、价格、人气、销量），分页。
 }

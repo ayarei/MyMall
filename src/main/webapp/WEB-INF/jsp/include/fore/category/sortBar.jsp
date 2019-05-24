@@ -28,7 +28,7 @@
 					var price = $(this).attr("price");
 					price = new Number(price);
 
-					if (price<=end && price> = begin)
+					if (price<=end && price>= begin)
 						$(this).show();
 				});
 			}

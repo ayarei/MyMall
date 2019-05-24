@@ -22,4 +22,6 @@ public interface ProductService {
 	//为产品对象设置评论数量与销量
 	public void setReviewAndSaleNumber(Product product);
 	public void setReviewAndSaleNumber(List<Product> productList);
+	
+	public List<Product> search(String keyWord);
 }

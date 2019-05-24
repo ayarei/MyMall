@@ -183,6 +183,17 @@ public class ProductServiceImpl implements ProductService {
 		}
 	}
 
+	@Override
+	public List<Product> search(String keyWord) {
+		ProductExample example = new ProductExample();
+        example.createCriteria().andNameLike("%" + keyWord + "%");
+        example.setOrderByClause("id desc");
+        List<Product> result = productMapper.selectByExample(example);
+        setFirstProductImage(result);
+        setCategory(result);
+        return result;
+	}
+
 	
 }
 
