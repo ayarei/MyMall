@@ -56,8 +56,7 @@ public class AdminController {
 			model.addAttribute("admin", null);
 			return "admin/registerPage";
 		}
-		String base = admin.getPassword() + slat;
-		admin.setPassword(DigestUtils.md5DigestAsHex(base.getBytes()));
+		admin.setPassword(getMD5(admin.getPassword()));
 		adminService.add(admin);
 		return "redirect:adminRegisterSuccessPage";
 	}
@@ -69,8 +68,7 @@ public class AdminController {
 	public String loginPage(Model model, Admin admin, HttpSession session) {
 
 		admin.setName(HtmlUtils.htmlEscape(admin.getName()));
-		String base = admin.getPassword() + slat;
-		String passWord = DigestUtils.md5DigestAsHex(base.getBytes());
+		String passWord = getMD5(admin.getPassword());
 
 		// adminService.get()：根据name与password查找管理员实例
 		Admin now = adminService.get(admin.getName(), passWord);
@@ -90,6 +88,12 @@ public class AdminController {
 	public String logoutPage(HttpSession session) {
 		session.removeAttribute("admin");
 		return "redirect:admin_login";
+	}
+
+	private String getMD5(String password) {
+		String base = password + slat;
+		String passWord = DigestUtils.md5DigestAsHex(base.getBytes());
+		return passWord;
 	}
 
 }

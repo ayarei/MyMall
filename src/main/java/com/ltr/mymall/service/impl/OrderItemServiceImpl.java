@@ -112,6 +112,16 @@ public class OrderItemServiceImpl implements OrderItemService {
 		}
 		return count;
 	}
+
+	//查找用户购物车中所有产品
+	@Override
+	public List<OrderItem> listByUser(int uid) {
+		OrderItemExample example = new OrderItemExample();
+		example.createCriteria().andUidEqualTo(uid).andOidIsNull();
+		List<OrderItem> result  =orderItemMapper.selectByExample(example);
+		setProduct(result);
+		return result;			
+	}
 }
 
 

@@ -23,6 +23,7 @@ import com.ltr.mymall.comparator.ProductPriceComparator;
 import com.ltr.mymall.comparator.ProductReviewComparator;
 import com.ltr.mymall.comparator.ProductSaleCountComparator;
 import com.ltr.mymall.pojo.Category;
+import com.ltr.mymall.pojo.OrderItem;
 import com.ltr.mymall.pojo.Product;
 import com.ltr.mymall.pojo.ProductImage;
 import com.ltr.mymall.pojo.PropertyValue;
@@ -218,6 +219,43 @@ public class ForeController {
 		return "fore/searchResult";
 	}
 	
+	/**
+	 * 用户在产品页面立即购买，同时会将购物车里同样的产品一起结账
+	 * 
+	 * @param pid
+	 * @param buyNumber
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("forebuyone")
+	public String forebuyone(int pid, @RequestParam("num")int buyNumber, HttpSession session) {
+		Product product = productService.get(pid);
+		int orderItemId = 0;
+
+		User user = (User) session.getAttribute("user");
+		
+		boolean found = false;  //是否在购物车中有相同产品
+		List<OrderItem> orderItemList = orderItemService.listByUser(user.getId());
+		//检查是否有相同产品
+		for (OrderItem e : orderItemList) {
+			if (e.getProduct().getId().intValue() == product.getId().intValue()) {
+				e.setNumber(e.getNumber() + buyNumber);
+				orderItemService.update(e);
+				found = true;
+				orderItemId = e.getId();
+			}
+		}
+		if (!found) {
+			OrderItem orderItem = new OrderItem();
+			orderItem.setUid(user.getId());
+			orderItem.setNumber(buyNumber);
+			orderItem.setPid(pid);
+			orderItemService.add(orderItem);
+			orderItemId = orderItem.getId();
+		}
+		return "redirect:forebuy?oiid=" + orderItemId;
+	}
+	
 	
 	/**
 	 * 用户注册
@@ -241,9 +279,8 @@ public class ForeController {
 			model.addAttribute("user", null);
 			return "fore/register";
 		}
-		// 将密码MD5加密
-		String base = user.getPassword() + slat;
-		user.setPassword(DigestUtils.md5DigestAsHex(base.getBytes()));
+		
+		user.setPassword(getMD5(user.getPassword()));
 		userService.add(user);
 		return "redirect:registerSuccessPage";
 
@@ -260,8 +297,7 @@ public class ForeController {
 	@RequestMapping("forelogin")
 	public String login(Model model, User user, HttpSession session) {
 		user.setName(HtmlUtils.htmlEscape(user.getName()));
-		String base = user.getPassword() + slat;
-		String password = DigestUtils.md5DigestAsHex(base.getBytes());
+		String password = getMD5(user.getPassword());
 
 		User now = userService.get(user.getName(), password);
 
@@ -315,9 +351,8 @@ public class ForeController {
 	@ResponseBody
 	public String loginAjax(@RequestParam("name") String name, @RequestParam("password") String password,
 			HttpSession session) {
-		String base = password + slat;
 		name = HtmlUtils.htmlEscape(name);
-		password = DigestUtils.md5DigestAsHex(base.getBytes());
+		password = getMD5(password);
 
 		User user = userService.get(name, password);
 		if (null == user) {
@@ -326,4 +361,24 @@ public class ForeController {
 		session.setAttribute("user", user);
 		return "success";
 	}
+	
+	private String getMD5(String password) {
+		String base = password + slat;
+		String passWord = DigestUtils.md5DigestAsHex(base.getBytes());
+		return passWord;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

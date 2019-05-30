@@ -29,8 +29,8 @@
 				<span class="text-danger">不要输入真实的天猫账号密码</span><br>
 				<br>
 				<div>
-					<a href="#nowhere">忘记登录密码</a> <a href="registerPage"
-						class="pull-right">免费注册</a>
+					<a href="#nowhere">忘记登录密码</a> 
+					<a href="registerPage"class="pull-right">免费注册</a>
 				</div>
 				<div style="margin-top: 20px">
 					<button class="btn btn-block redButton loginSubmitButton"
