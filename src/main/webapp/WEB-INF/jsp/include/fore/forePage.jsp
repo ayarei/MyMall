@@ -27,13 +27,14 @@
 		 	 status.conunt: 从1开始的计数值
 	 	-->
 		<c:forEach begin="0" end="${page.totalPage-1}" varStatus="status">
-
-			<li
-				<c:if test="${status.index*page.count==page.start}">class="disabled"</c:if>>
-				<a href="?${page.param}start=${status.index*page.count}"
-				<c:if test="${status.index*page.count==page.start}">class="current"</c:if>>${status.count}</a>
-			</li>
-
+			<c:if
+				test="${status.count*page.count-page.start<=40 && status.count*page.count-page.start>=-30}">
+				<li
+					<c:if test="${status.index*page.count==page.start}">class="disabled"</c:if>>
+					<a href="?start=${status.index*page.count}${page.param}"
+					<c:if test="${status.index*page.count==page.start}">class="current"</c:if>>${status.count}</a>
+				</li>
+			</c:if>
 		</c:forEach>
 
 		<li <c:if test="${!page.hasNext}">class="disabled"</c:if>><a
