@@ -256,6 +256,32 @@ public class ForeController {
 		return "redirect:forebuy?oiid=" + orderItemId;
 	}
 	
+	/**
+	 * 商品结算
+	 * @param model
+	 * @param session
+	 * @param orderItemId 一个id对应一种商品
+	 * @return
+	 */
+	@RequestMapping("forebuy")
+	public String buy(Model model,HttpSession session,@RequestParam("oiid")String[] orderItemId) {
+		List<OrderItem> orderItemList = new ArrayList<OrderItem>();
+		float total = 0; // 订单总价
+		
+		for(String e : orderItemId) {
+			int id = Integer.parseInt(e);
+			OrderItem orderItem = orderItemService.get(id);
+			Product buyproduct = productService.get(orderItem.getPid());
+			orderItem.setProduct(buyproduct);
+			total += orderItem.getProduct().getPromotePrice() * orderItem.getNumber();
+			orderItemList.add(orderItem);
+		}
+		
+		session.setAttribute("ois", orderItemList);
+		model.addAttribute("total", total);
+		return "fore/buy";
+	}
+	
 	
 	/**
 	 * 用户注册
