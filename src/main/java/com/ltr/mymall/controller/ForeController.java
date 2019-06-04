@@ -116,12 +116,12 @@ public class ForeController {
 	 * 前台产品页排序
 	 * 
 	 * @param cid
-	 * @param sort 
-	 * review：    评论数倒序 
-	 * saleCount： 销量倒序 
-	 * date：      上架时间倒序 
-	 * price：     价格正序 
-	 * all：       销量*评论数倒序
+	 * @param 
+	 * sort review： 评论数倒序 
+	 * saleCount：   销量倒序 
+	 * date：        上架时间倒序 
+	 * price：       价格正序
+	 * all：         销量*评论数倒序
 	 * 
 	 * @return
 	 */
@@ -149,7 +149,7 @@ public class ForeController {
 			model.addAttribute("page", page);
 			return "fore/category";
 
-		// 条件排序
+			// 条件排序
 		} else {
 			Category category = categoryService.get(cid);
 			List<Product> products = productService.list(cid);
@@ -184,8 +184,7 @@ public class ForeController {
 				break;
 			}
 			/**
-			 * 分段截取全表查询的数据
-			 * 注意边界情况
+			 * 分段截取全表查询的数据 注意边界情况
 			 */
 			if (page.getStart() + productCount <= total) {
 				for (int i = page.getStart(); i < page.getStart() + productCount; i++)
@@ -206,6 +205,7 @@ public class ForeController {
 
 	/**
 	 * 前台搜索功能，截取满足条件的前20个产品
+	 * 
 	 * @param keyword 搜索关键字
 	 * @param model
 	 * @return
@@ -218,57 +218,85 @@ public class ForeController {
 		model.addAttribute("ps", productList);
 		return "fore/searchResult";
 	}
-	
+
 	/**
-	 * 用户在产品页面立即购买，同时会将购物车里同样的产品一起结账
+	 * 用户在产品页面立即购买，此时并不会将购物车里相同的产品添加结算
 	 * 
-	 * @param pid
-	 * @param buyNumber
+	 * @param pid       商品ID
+	 * @param buyNumber 购买数量
 	 * @param session
 	 * @return
 	 */
 	@RequestMapping("forebuyone")
-	public String forebuyone(int pid, @RequestParam("num")int buyNumber, HttpSession session) {
-		Product product = productService.get(pid);
+	public String forebuyone(int pid, @RequestParam("num") int buyNumber, HttpSession session) {
 		int orderItemId = 0;
 
 		User user = (User) session.getAttribute("user");
-		
-		boolean found = false;  //是否在购物车中有相同产品
+
+		OrderItem orderItem = new OrderItem();
+		orderItem.setUid(user.getId());
+		orderItem.setNumber(buyNumber);
+		orderItem.setPid(pid);
+		orderItemService.add(orderItem);
+		orderItemId = orderItem.getId();
+
+		return "redirect:forebuy?oiid=" + orderItemId;
+	}
+
+	/**
+	 * 添加购物车
+	 * 
+	 * @param pid       商品ID
+	 * @param buyNumber 购买数量
+	 * @param model
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("foreaddCart")
+	@ResponseBody
+	public String addCart(int pid, @RequestParam("num") int buyNumber, Model model, HttpSession session) {
+		Product product = productService.get(pid);
+		User user = (User) session.getAttribute("user");
+		boolean found = false; // 是否在购物车中找到相应的产品
+
+		// 列出购物车中所有商品
 		List<OrderItem> orderItemList = orderItemService.listByUser(user.getId());
-		//检查是否有相同产品
+
+		// 若购物车已经有对应的产品则更新数量
 		for (OrderItem e : orderItemList) {
-			if (e.getProduct().getId().intValue() == product.getId().intValue()) {
+			if (e.getProduct().getId().intValue() == product.getId()) {
+				found = true;
 				e.setNumber(e.getNumber() + buyNumber);
 				orderItemService.update(e);
-				found = true;
-				orderItemId = e.getId();
+				break;
 			}
 		}
+		// 若购物车没有对应产品则添加产品进购物车
 		if (!found) {
 			OrderItem orderItem = new OrderItem();
 			orderItem.setUid(user.getId());
 			orderItem.setNumber(buyNumber);
 			orderItem.setPid(pid);
 			orderItemService.add(orderItem);
-			orderItemId = orderItem.getId();
 		}
-		return "redirect:forebuy?oiid=" + orderItemId;
+		return "success";
+
 	}
-	
+
 	/**
 	 * 商品结算
+	 * 
 	 * @param model
 	 * @param session
-	 * @param orderItemId 一个id对应一种商品
+	 * @param orderItemId 一个ID对应一种商品
 	 * @return
 	 */
 	@RequestMapping("forebuy")
-	public String buy(Model model,HttpSession session,@RequestParam("oiid")String[] orderItemId) {
+	public String buy(Model model, HttpSession session, @RequestParam("oiid") String[] orderItemId) {
 		List<OrderItem> orderItemList = new ArrayList<OrderItem>();
 		float total = 0; // 订单总价
-		
-		for(String e : orderItemId) {
+
+		for (String e : orderItemId) {
 			int id = Integer.parseInt(e);
 			OrderItem orderItem = orderItemService.get(id);
 			Product buyproduct = productService.get(orderItem.getPid());
@@ -276,13 +304,12 @@ public class ForeController {
 			total += orderItem.getProduct().getPromotePrice() * orderItem.getNumber();
 			orderItemList.add(orderItem);
 		}
-		
+
 		session.setAttribute("ois", orderItemList);
 		model.addAttribute("total", total);
 		return "fore/buy";
 	}
-	
-	
+
 	/**
 	 * 用户注册
 	 * 
@@ -305,7 +332,7 @@ public class ForeController {
 			model.addAttribute("user", null);
 			return "fore/register";
 		}
-		
+
 		user.setPassword(getMD5(user.getPassword()));
 		userService.add(user);
 		return "redirect:registerSuccessPage";
@@ -387,24 +414,10 @@ public class ForeController {
 		session.setAttribute("user", user);
 		return "success";
 	}
-	
+
 	private String getMD5(String password) {
 		String base = password + slat;
 		String passWord = DigestUtils.md5DigestAsHex(base.getBytes());
 		return passWord;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

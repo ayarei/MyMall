@@ -13,6 +13,7 @@
 <link href="css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
 <script src="js/bootstrap/3.3.6/bootstrap.min.js"></script>
 <link href="css/fore/style.css" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="img/site/admin.ico">
 <script>
 	function formatMoney(num) {
 		num = num.toString().replace(/\$|\,/g, '');
