@@ -42,6 +42,11 @@
 			<mvc:mapping path="/fore*" />
 			<bean class="com.ltr.mymall.interceptor.ForeLoginInterceptor" />
 		</mvc:interceptor>
+		<mvc:interceptor>
+			<!-- 其他拦截器（获取购物车商品总数、搜索栏下商品分类展示） -->
+			<mvc:mapping path="/fore*" />
+			<bean class="com.ltr.mymall.interceptor.OtherInterceptor"/>
+		</mvc:interceptor>
 	</mvc:interceptors>
 </beans>
 

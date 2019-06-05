@@ -285,16 +285,64 @@ public class ForeController {
 	
 	/**
 	 * 用户查看购物车
+	 * 
 	 * @param session
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping("forecart")
-	public String forecart(HttpSession session,Model model) {
+	public String foreCart(HttpSession session,Model model) {
 		User user = (User) session.getAttribute("user");
 		List<OrderItem> orderItemList = orderItemService.listByUser(user.getId());
 		model.addAttribute("ois", orderItemList);
 		return "fore/cart";
+	}
+	
+	/**
+	 * 用户修改购物车某件商品的数量
+	 * 
+	 * @param session
+	 * @param productId
+	 * @param buyNumber
+	 * @return
+	 */
+	@RequestMapping("forechangeOrderItem")
+	@ResponseBody
+	public String changeOrderItem(HttpSession session, @RequestParam("pid") int productId,
+			@RequestParam("number") int buyNumber) {
+		User user = (User) session.getAttribute("user");
+		// 再次判断是否登录，防止session失效造成的问题
+		if(null == user) return "fail";
+		
+		List<OrderItem> orderItemList = orderItemService.listByUser(user.getId());
+		for(OrderItem e : orderItemList) {
+			if(e.getProduct().getId().intValue() == productId) {
+				e.setNumber(buyNumber);
+				orderItemService.update(e);
+				break;
+			}
+		}
+		return "success";
+	}
+	
+	/**
+	 * 用户删除购物车中的商品
+	 * 
+	 * @param session
+	 * @param orderItemId
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("foredeleteOrderItem")
+	@ResponseBody
+	public String deleteOrderItem(HttpSession session, @RequestParam("oiid") int orderItemId, Model model) {
+		User user = (User) session.getAttribute("user");
+		// 再次判断是否登录，防止session失效造成的问题
+		if (null == user)
+			return "fail";
+
+		orderItemService.delete(orderItemId);
+		return "success";
 	}
 
 	/**
