@@ -10,12 +10,9 @@ import com.ltr.mymall.pojo.ProductExample;
 import com.ltr.mymall.pojo.Property;
 import com.ltr.mymall.pojo.PropertyExample;
 import com.ltr.mymall.service.CategoryService;
-import com.ltr.mymall.service.ProductService;
 import com.ltr.mymall.util.ImageUtil;
 import com.ltr.mymall.util.Page;
 import com.ltr.mymall.util.UploadedImageFile;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -86,10 +83,6 @@ public class CategoryController {
 		// 如果“img/category”文件夹不存在则创建
 		if (!file.getParentFile().exists())
 			file.getParentFile().mkdirs();
-
-		// System.out.println(uploadedImageFile);
-		// System.out.println(uploadedImageFile.getImage());
-		// System.out.println(file);
 
 		// 图片保存在“img/category”
 		uploadedImageFile.getImage().transferTo(file);

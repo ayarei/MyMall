@@ -282,6 +282,20 @@ public class ForeController {
 		return "success";
 
 	}
+	
+	/**
+	 * 用户查看购物车
+	 * @param session
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("forecart")
+	public String forecart(HttpSession session,Model model) {
+		User user = (User) session.getAttribute("user");
+		List<OrderItem> orderItemList = orderItemService.listByUser(user.getId());
+		model.addAttribute("ois", orderItemList);
+		return "fore/cart";
+	}
 
 	/**
 	 * 商品结算

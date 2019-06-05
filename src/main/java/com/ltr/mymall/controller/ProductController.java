@@ -18,7 +18,6 @@ import com.ltr.mymall.pojo.Category;
 import com.ltr.mymall.pojo.Product;
 import com.ltr.mymall.pojo.ProductImage;
 import com.ltr.mymall.pojo.ProductImageExample;
-import com.ltr.mymall.pojo.Property;
 import com.ltr.mymall.service.CategoryService;
 import com.ltr.mymall.service.ProductImageService;
 import com.ltr.mymall.service.ProductService;

@@ -37,6 +37,11 @@
 			<mvc:mapping path="/admin_*" />
 			<bean class="com.ltr.mymall.interceptor.AdminLoginInterceptor" />
 		</mvc:interceptor>
+		<mvc:interceptor>
+			<!-- 前台用户登录页面拦截器 -->
+			<mvc:mapping path="/fore*" />
+			<bean class="com.ltr.mymall.interceptor.ForeLoginInterceptor" />
+		</mvc:interceptor>
 	</mvc:interceptors>
 </beans>
 
