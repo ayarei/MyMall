@@ -41,7 +41,6 @@ public class OrderItemServiceImpl implements OrderItemService {
 	@Override
 	public OrderItem get(int id) {
 		OrderItem result = orderItemMapper.selectByPrimaryKey(id);
-
 		return result;
 	}
 
@@ -100,11 +99,10 @@ public class OrderItemServiceImpl implements OrderItemService {
 	/**
 	 * 计算销量
 	 */
-	// TODO 不能以加入购物车来算销量，更改为创建订单后才加入销量
 	@Override
 	public int getSaleCount(int pid) {
 		OrderItemExample example = new OrderItemExample();
-		example.createCriteria().andPidEqualTo(pid);
+		example.createCriteria().andPidEqualTo(pid).andOidIsNotNull();
 		List<OrderItem> ois = orderItemMapper.selectByExample(example);
 		int count = 0;
 		for (OrderItem e : ois) {

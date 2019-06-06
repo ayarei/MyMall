@@ -1,11 +1,14 @@
 package com.ltr.mymall.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +26,7 @@ import com.ltr.mymall.comparator.ProductPriceComparator;
 import com.ltr.mymall.comparator.ProductReviewComparator;
 import com.ltr.mymall.comparator.ProductSaleCountComparator;
 import com.ltr.mymall.pojo.Category;
+import com.ltr.mymall.pojo.Order;
 import com.ltr.mymall.pojo.OrderItem;
 import com.ltr.mymall.pojo.Product;
 import com.ltr.mymall.pojo.ProductImage;
@@ -370,6 +374,48 @@ public class ForeController {
 		session.setAttribute("ois", orderItemList);
 		model.addAttribute("total", total);
 		return "fore/buy";
+	}
+	
+	/**
+	 * 用户创建订单，order中带有订单信息（收件人、电话号码、收件地址....）
+	 * @param model
+	 * @param session
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping("forecreateOrder")
+	public String createOrder(Model model, HttpSession session, Order order) {
+		User user = (User) session.getAttribute("user");
+		Date createDate = new Date();
+		// 订单号由下单时间加上4位随机数组成
+		String orderCode = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(createDate) + RandomUtils.nextInt(10000);
+		
+		order.setOrderCode(orderCode);
+		order.setCreateDate(createDate);
+		order.setUid(user.getId());
+		order.setStatus(OrderService.waitPay);
+		List<OrderItem> ois= (List<OrderItem>)session.getAttribute("ois");
+		
+		float total = orderService.add(order, ois);
+		return "redirect:forealipay?oid="+order.getId() +"&total="+total;
+		
+	}
+	
+	/**
+	 * 扫码支付
+	 * @param oid
+	 * @param total
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("forepayed")
+	public String payed(int oid, float total, Model model) {
+	    Order order = orderService.get(oid);
+	    order.setStatus(OrderService.waitDelivery);
+	    order.setPayDate(new Date());
+	    orderService.update(order);
+	    model.addAttribute("o", order);
+	    return "fore/payed";
 	}
 
 	/**
