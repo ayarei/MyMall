@@ -53,13 +53,14 @@
 	</bean>
 
 	<!--Mybatis的SessionFactory配置 -->
-	<bean id="sqlSession"
+	<bean id="sqlSessionFactory"
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="typeAliasesPackage"
 			value="com.ltr.mymall.pojo" />
 		<property name="dataSource" ref="dataSource" />
 		<property name="mapperLocations"
 			value="classpath:mapper/*.xml" />
+		<property name="configLocation" value="classpath:mybatis-config.xml"></property>	
 
 		<!-- 分页插件 -->
 		<property name="plugins">
@@ -72,6 +73,10 @@
 				</bean>
 			</array>
 		</property>
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
 
 	<!--Mybatis的Mapper文件识别 -->

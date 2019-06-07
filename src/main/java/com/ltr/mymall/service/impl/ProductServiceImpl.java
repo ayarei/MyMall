@@ -3,6 +3,10 @@ package com.ltr.mymall.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.SqlSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,7 @@ import com.ltr.mymall.service.ProductImageService;
 import com.ltr.mymall.service.ProductService;
 import com.ltr.mymall.service.PropertyValueService;
 import com.ltr.mymall.service.ReviewService;
+import com.mysql.cj.xdevapi.SessionFactory;
 
 /**
  * 
@@ -47,6 +52,9 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Autowired
 	ReviewService reviewService;
+		
+	//@Autowired
+	//SqlSessionTemplate sqlSessionTemplate;
 
 	@Override
 	public void add(Product p) {
@@ -96,6 +104,7 @@ public class ProductServiceImpl implements ProductService {
 		setCategory(p);
 		return p;
 	}
+	
 
 	public void setCategory(List<Product> ps) {
 		for (Product p : ps)
@@ -192,6 +201,20 @@ public class ProductServiceImpl implements ProductService {
         setFirstProductImage(result);
         setCategory(result);
         return result;
+	}
+
+	@Override
+	public int updateStock(Product product, int buyNumber) {		
+		return productMapper.concurrentUpdateStock(product,buyNumber);
+	}
+
+	@Override
+	public Product normalGet(int id) {
+		//sqlSessionTemplate.clearCache();
+		//return (Product)sqlSessionTemplate.selectOne("com.ltr.mymall.mapper.ProductMapper.normalGet",id);
+		return productMapper.normalGet(id);
+		
+		
 	}
 
 	

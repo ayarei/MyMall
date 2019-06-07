@@ -64,6 +64,9 @@
     from product
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="normalGet" parameterType="java.lang.Integer" useCache="false" flushCache="true" resultType="Product" >
+  	select * from product where id = #{id,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from product
     where id = #{id,jdbcType=INTEGER}
@@ -163,4 +166,9 @@
       createDate = #{createDate,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <update id="concurrentUpdateStock" parameterType="com.ltr.mymall.pojo.Product" >
+	update product
+	set stock = stock - #{buyNumber}
+	where id = #{product.id,jdbcType=INTEGER} and stock > 0 and stock = #{product.stock,jdbcType=INTEGER}
+</update>
 </mapper>

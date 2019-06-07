@@ -25,6 +25,7 @@ import com.ltr.mymall.comparator.ProductDateComparator;
 import com.ltr.mymall.comparator.ProductPriceComparator;
 import com.ltr.mymall.comparator.ProductReviewComparator;
 import com.ltr.mymall.comparator.ProductSaleCountComparator;
+import com.ltr.mymall.exception.OutOfStockException;
 import com.ltr.mymall.pojo.Category;
 import com.ltr.mymall.pojo.Order;
 import com.ltr.mymall.pojo.OrderItem;
@@ -386,18 +387,30 @@ public class ForeController {
 	@RequestMapping("forecreateOrder")
 	public String createOrder(Model model, HttpSession session, Order order) {
 		User user = (User) session.getAttribute("user");
-		Date createDate = new Date();
-		// 订单号由下单时间加上4位随机数组成
-		String orderCode = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(createDate) + RandomUtils.nextInt(10000);
+		float total = -1;
+		try {
+			Date createDate = new Date();
+			// 订单号由下单时间加上4位随机数组成
+			String orderCode = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(createDate) + RandomUtils.nextInt(10000);
+			
+			order.setOrderCode(orderCode);
+			order.setCreateDate(createDate);
+			order.setUid(user.getId());
+			order.setStatus(OrderService.waitPay);
+			List<OrderItem> ois= (List<OrderItem>)session.getAttribute("ois");
+			
+			// 乐观锁重试机制
+			// 当购买商品库存为0或者购买商品数多于库存时抛出OutOfStockException
+			while(total == -1) {
+				total = orderService.add(order, ois);
+			}			
+			return "redirect:forealipay?oid="+order.getId() +"&total="+total;
+			
+		} catch (OutOfStockException e) {
+			// TODO跳转到“没有库存了界面”
+			return null;
+		}
 		
-		order.setOrderCode(orderCode);
-		order.setCreateDate(createDate);
-		order.setUid(user.getId());
-		order.setStatus(OrderService.waitPay);
-		List<OrderItem> ois= (List<OrderItem>)session.getAttribute("ois");
-		
-		float total = orderService.add(order, ois);
-		return "redirect:forealipay?oid="+order.getId() +"&total="+total;
 		
 	}
 	

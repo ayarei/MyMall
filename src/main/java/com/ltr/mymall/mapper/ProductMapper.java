@@ -4,6 +4,9 @@ import com.ltr.mymall.pojo.Product;
 import com.ltr.mymall.pojo.ProductExample;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
+
 public interface ProductMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -18,4 +21,8 @@ public interface ProductMapper {
     int updateByPrimaryKeySelective(Product record);
 
     int updateByPrimaryKey(Product record);
+    
+    int concurrentUpdateStock(@Param("product")Product record,@Param("buyNumber")int buyNumber);
+    
+    Product normalGet(@Param("id")Integer id);
 }

@@ -20,6 +20,4 @@ public interface OrderService {
     public void update(Order c);
     public Order get(int id);
     public List<Order> list();
-    // TODO 添加更新库存操作，使用乐观锁实现并发控制
-    // TODO 实现乐观锁重试机制
 }

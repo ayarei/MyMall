@@ -14,6 +14,10 @@ public interface ProductService {
 	public List<Product> list(int cid);
 	public void setFirstProductImage(Product p);
 	
+	// 乐观锁解决多线程库存更新
+	public int updateStock(Product product, int buyNumber);
+	public Product normalGet(int id);
+	
 	//为分类填充产品集合
 	public void fill(List<Category> categories);
 	public void fill(Category category);
