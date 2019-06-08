@@ -9,6 +9,8 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.math.RandomUtils;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +27,8 @@ import com.ltr.mymall.comparator.ProductDateComparator;
 import com.ltr.mymall.comparator.ProductPriceComparator;
 import com.ltr.mymall.comparator.ProductReviewComparator;
 import com.ltr.mymall.comparator.ProductSaleCountComparator;
+import com.ltr.mymall.dto.CreateOrderExecution;
+import com.ltr.mymall.dto.noStock;
 import com.ltr.mymall.exception.OutOfStockException;
 import com.ltr.mymall.pojo.Category;
 import com.ltr.mymall.pojo.Order;
@@ -53,6 +57,7 @@ import com.ltr.mymall.util.Page;
 @Controller
 @RequestMapping("")
 public class ForeController {
+	private final Logger logger = Logger.getLogger(ForeController.class);
 
 	// 注册与登录的MD5盐值
 	private static final String slat = "kjag15&*%FJD92tvjabES$%@dj8ah43dchFRe*^$#";
@@ -388,6 +393,8 @@ public class ForeController {
 	public String createOrder(Model model, HttpSession session, Order order) {
 		User user = (User) session.getAttribute("user");
 		float total = -1;
+		CreateOrderExecution execution = null;
+		
 		try {
 			Date createDate = new Date();
 			// 订单号由下单时间加上4位随机数组成
@@ -401,17 +408,50 @@ public class ForeController {
 			
 			// 乐观锁重试机制
 			// 当购买商品库存为0或者购买商品数多于库存时抛出OutOfStockException
+			// total == -1，并发购买冲突
+			// total == -2，有售罄商品
 			while(total == -1) {
-				total = orderService.add(order, ois);
-			}			
-			return "redirect:forealipay?oid="+order.getId() +"&total="+total;
+				execution = orderService.add(order, ois);
+				total = execution.getTotal();
+			}
+			
+			if(total == -2) {
+				throw new OutOfStockException("订单包含售罄商品");
+			}
+			return "redirect:forealipay?oid="+order.getId()+"&total="+total;
 			
 		} catch (OutOfStockException e) {
-			// TODO跳转到“没有库存了界面”
-			return null;
-		}
-		
-		
+			logger.error("ID："+user.getId()+"，用户名："+user.getName()+"，"+e.getMessage());
+			// 从OrderItemList中取出售罄商品、用户购买数量
+			List<OrderItem> ois= (List<OrderItem>)session.getAttribute("ois");
+			List<noStock> noStockProductList = new ArrayList<noStock>();
+
+			for(Integer p : execution.getNoStockID()) {
+				for(OrderItem k : ois) {
+					if(k.getProduct().getId() == p) {
+						noStockProductList.add(new noStock(k.getProduct(), k.getNumber()));
+					}
+				}
+			}			
+			model.addAttribute("noStockProductList",noStockProductList);
+			return "fore/nostock";
+		}	
+	}
+	
+	/**
+	 * 
+	 * @param model
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("forebought")
+	public String bought(Model model, HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		// 查询出未被删除的订单
+		List<Order> orderList = orderService.list(user.getId(), OrderService.delete);
+		orderItemService.fill(orderList);
+		model.addAttribute("os", orderList);
+		return "fore/bought";
 	}
 	
 	/**

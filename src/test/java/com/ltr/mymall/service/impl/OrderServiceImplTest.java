@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.ltr.mymall.dto.CreateOrderExecution;
 import com.ltr.mymall.exception.OutOfStockException;
 import com.ltr.mymall.pojo.Order;
 import com.ltr.mymall.pojo.OrderItem;
@@ -38,26 +39,32 @@ public class OrderServiceImplTest {
 		Order order1 = new Order();
 		order1.setOrderCode("201906061725020414457");
 		List<OrderItem> ois1 = new ArrayList<OrderItem>();
-		OrderItem oi1 = orderItemService.get(30);
+		OrderItem oi1 = orderItemService.get(39);
 		ois1.add(oi1);
 
 		Order order2 = new Order();
 		order2.setOrderCode("201906061725020414457");
 		List<OrderItem> ois2 = new ArrayList<OrderItem>();
-		OrderItem oi2 = orderItemService.get(32);
+		OrderItem oi2 = orderItemService.get(40);
 		ois2.add(oi2);
 
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				float ret1 = -1;
+				CreateOrderExecution excution;
 				try {
 					while(ret1 == -1) {
-						ret1 = orderService.add(order1, ois1);
+						excution = orderService.add(order1, ois1);
+						ret1 = excution.getTotal();
 						System.out.println(ret1);
 						Product p = productService.normalGet(999);
 						System.out.println("AfterChange1:" + p.getStock());
 					}
+					if(ret1 == -2) {
+						throw new OutOfStockException("商品售罄"); 
+					}
+					System.out.println(this.getClass() + "购买成功");
 					
 				} catch (OutOfStockException e) {
 					System.out.println(e.getMessage());
@@ -71,13 +78,19 @@ public class OrderServiceImplTest {
 			@Override
 			public void run() {
 				float ret2 = -1;
+				CreateOrderExecution excution;
 				try {
 					while(ret2 == -1) {
-						ret2 = orderService.add(order2, ois2);
+						excution = orderService.add(order2, ois2);
+						ret2 = excution.getTotal();
 						System.out.println(ret2);
 						Product p = productService.normalGet(999);
 						System.out.println("AfterChange2:" + p.getStock());
 					}	
+					if(ret2 == -2) {
+						throw new OutOfStockException("商品售罄"); 
+					}
+					System.out.println(this.getClass() + "购买成功");
 				} catch (OutOfStockException e) {
 					System.out.println(e.getMessage());
 				}

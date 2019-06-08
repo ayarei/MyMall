@@ -63,26 +63,26 @@ public class OrderItemServiceImpl implements OrderItemService {
 	}
 
 	/**
-	 * 计算总价,并将结果返还给Order
+	 * 计算总价、商品总数、商品列表,并将结果返还给Order
 	 */
 	@Override
 	public void fill(Order o) {
 		OrderItemExample example = new OrderItemExample();
 		example.createCriteria().andOidEqualTo(o.getId());
 		example.setOrderByClause("id desc");
-		List<OrderItem> ois = orderItemMapper.selectByExample(example);
-		setProduct(ois);
+		List<OrderItem> orderItemList = orderItemMapper.selectByExample(example);
+		setProduct(orderItemList);
 
-		float total = 0;
+		float totalPrice = 0;
 		int totalNumber = 0;
-		for (OrderItem e : ois) {
+		for (OrderItem e : orderItemList) {
 			totalNumber = totalNumber + e.getNumber();
-			total = total + e.getNumber() * e.getProduct().getPromotePrice();
+			totalPrice = totalPrice + e.getNumber() * e.getProduct().getPromotePrice();
 		}
 
-		o.setTotal(total);
+		o.setTotal(totalPrice);
 		o.setTotalNumber(totalNumber);
-		o.setOrderItems(ois);
+		o.setOrderItems(orderItemList);
 	}
 
 	public void setProduct(List<OrderItem> ois) {
@@ -121,26 +121,3 @@ public class OrderItemServiceImpl implements OrderItemService {
 		return result;			
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
