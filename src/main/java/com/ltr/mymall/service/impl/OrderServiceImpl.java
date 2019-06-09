@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.ltr.mymall.dto.CreateOrderExecution;
-import com.ltr.mymall.exception.ConcurrentChange;
+import com.ltr.mymall.exception.ConcurrentChangeException;
 import com.ltr.mymall.exception.OutOfStockException;
 import com.ltr.mymall.mapper.OrderMapper;
 import com.ltr.mymall.pojo.Order;
@@ -124,7 +124,7 @@ public class OrderServiceImpl implements OrderService{
 						orderItemService.update(e);
 						total += nowProduct.getPromotePrice() * e.getNumber();
 					}else {
-						throw new ConcurrentChange("多线程数据被篡改，需要重试");
+						throw new ConcurrentChangeException("多线程数据被篡改，需要重试");
 					}
 				}
 				// 将售罄商品ID加入noStockID
@@ -143,7 +143,7 @@ public class OrderServiceImpl implements OrderService{
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return new CreateOrderExecution(-2, noStockID); // 订单包含售罄商品
 			
-		} catch(ConcurrentChange e) {
+		} catch(ConcurrentChangeException e) {
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return new CreateOrderExecution(-1, noStockID); // 并发购买冲突，在ForeController中重新提交事务
 		}

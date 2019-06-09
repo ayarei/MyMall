@@ -25,6 +25,13 @@ public class OrderController {
 	@Autowired
 	OrderItemService orderItemService;
 
+	/**
+	 * 列出订单
+	 * @param model
+	 * @param page
+	 * @return
+	 * 
+	 */
 	@RequestMapping("admin_order_list")
 	public String list(Model model, Page page) {
 		PageHelper.offsetPage(page.getStart(), page.getCount());

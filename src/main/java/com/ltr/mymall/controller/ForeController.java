@@ -439,7 +439,7 @@ public class ForeController {
 	}
 	
 	/**
-	 * 
+	 * 用户查看订单
 	 * @param model
 	 * @param session
 	 * @return
@@ -470,6 +470,53 @@ public class ForeController {
 	    model.addAttribute("o", order);
 	    return "fore/payed";
 	}
+	
+	/**
+	 * 确认收货（跳转到确认收货界面）
+	 * @param oid
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("foreconfirmPay")
+	public String confirmPay(int oid, Model model) {
+		Order order = orderService.get(oid);
+		orderItemService.fill(order);
+		model.addAttribute("o", order);
+		return "fore/confirmPay";
+	}
+	
+	/**
+	 * 收货成功
+	 * @param oid
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("foreorderConfirmed")
+	public String orderConfirm(int oid, Model model) {
+		Order order = orderService.get(oid);
+		// 修改订单状态为等待评价
+		order.setStatus(OrderService.waitReview);
+		order.setConfirmDate(new Date());
+		orderService.update(order);
+		return "fore/orderConfirmed";
+	}
+	
+	/**
+	 * 删除订单
+	 * 并非从数据库中删除，只是将订单标记为“delete”状态
+	 * 在用户查询订单时会跳过“delete”状态的订单
+	 * @param model
+	 * @param oid
+	 * @return
+	 */
+	@RequestMapping("foredeleteOrder")
+    @ResponseBody
+    public String deleteOrder( Model model,int oid){
+        Order o = orderService.get(oid);
+        o.setStatus(OrderService.delete);
+        orderService.update(o);
+        return "success";
+    }
 
 	/**
 	 * 用户注册

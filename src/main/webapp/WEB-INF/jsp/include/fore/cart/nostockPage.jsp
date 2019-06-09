@@ -8,12 +8,12 @@
 </script>
 <title>商品售罄</title>
 <div class="noStockDiv">
-	<div class="noStockMessage" align="center" style="font-family:arial;color:black;font-size:25px;">
+	<div class="noStockMessage" style="font-family:arial;color:black;font-size:25px;text-align:center">
 		<strong>我们遗憾地通知您，您希望购买的如下商品已经售罄</strong>
 	</div>
 	<br>
 	<br>
-    <div class="noStockListItem" align="center">
+    <div class="noStockListItem" style="text-align:center">
     	<table class="noStockListTable">
     		<thead style="text-align:center">
     			<tr>

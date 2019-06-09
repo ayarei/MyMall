@@ -53,7 +53,7 @@
                     <td><fmt:formatDate value="${o.confirmDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
  
                     <td>
-                        <button oid=${o.id} class="orderPageCheckOrderItems btn btn-primary btn-xs">查看详情</button>
+                        <button oid="${o.id}" class="orderPageCheckOrderItems btn btn-primary btn-xs">查看详情</button>
  
                         <c:if test="${o.status=='waitDelivery'}">
                             <a href="admin_order_delivery?id=${o.id}">
@@ -62,37 +62,59 @@
                         </c:if>
                     </td>
                 </tr>
-                <tr class="orderPageOrderItemTR"  oid=${o.id}>
+                
+                <tr class="orderPageOrderItemTR"  oid="${o.id}">
+                    <td colspan="10">
+                        <div class="orderInfoDiv"> 	
+                            <table class="orderInfoTable">
+                                <thead>
+                                <tr>
+                                	<th width="300px" style="text-align:center">订单号</th>
+									<th width="300px" style="text-align:center">收货地址</th>
+									<th width="150px" style="text-align:center">收货人</th>
+									<th width="200px" style="text-align:center">联系电话</th>
+									<th width="150px" style="text-align:center">邮编</th>
+									<th width="350px" style="text-align:center">买家留言</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                	<tr>
+                                		<td width="300px" style="text-align:center">${o.orderCode}</td>
+                                		<td width="300px" style="text-align:center">${o.address}</td>
+                                		<td width="150px" style="text-align:center">${o.receiver}</td>
+                                		<td width="200px" style="text-align:center">${o.mobile}</td>
+                                		<td width="300px" style="text-align:center">${o.post}</td>
+                                		<td width="300px" style="text-align:center">${o.userMessage}</td>
+                                	</tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>        
+                <tr class="orderPageOrderItemTR"  oid="${o.id}">
                     <td colspan="10" align="center">
- 
-                        <div  class="orderPageOrderItem">
-                            <table width="800px" align="center" class="orderPageOrderItemTable">
+                        <div  class="orderPageOrderItem"> 	
+                            <table width="800px" class="orderPageOrderItemTable">
                                 <c:forEach items="${o.orderItems}" var="oi">
-                                    <tr>
+                                	<tr>	
                                         <td align="left">
                                             <img width="40px" height="40px" src="img/productSingle/${oi.product.firstProductImage.id}.jpg">
-                                        </td>
- 
+                                       	</td>
                                         <td>
                                             <a href="foreproduct?pid=${oi.product.id}">
-                                                <span>${oi.product.name}</span>
+                                               <span>${oi.product.name}</span>
                                             </a>
                                         </td>
                                         <td align="right">
- 
                                             <span class="text-muted">${oi.number}个</span>
-                                        </td>
+                                       	</td>
                                         <td align="right">
- 
-                                            <span class="text-muted">单价：￥${oi.product.promotePrice}</span>
+                                            	<span class="text-muted">单价：￥${oi.product.promotePrice}</span>
                                         </td>
- 
                                     </tr>
                                 </c:forEach>
- 
                             </table>
                         </div>
- 
                     </td>
                 </tr>
             </c:forEach>
