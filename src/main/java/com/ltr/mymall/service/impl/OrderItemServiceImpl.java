@@ -64,6 +64,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 
 	/**
 	 * 计算总价、商品总数、商品列表,并将结果返还给Order
+	 * @return 总价、商品总数、商品列表
 	 */
 	@Override
 	public void fill(Order o) {

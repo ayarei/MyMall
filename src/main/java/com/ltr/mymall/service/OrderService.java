@@ -7,6 +7,7 @@ import com.ltr.mymall.pojo.Order;
 import com.ltr.mymall.pojo.OrderItem;
 
 public interface OrderService {
+	// 订单状态
 	public static final String waitPay = "waitPay";
 	public static final String waitDelivery = "waitDelivery";
 	public static final String waitConfirm = "waitConfirm";

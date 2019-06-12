@@ -37,6 +37,7 @@ import com.ltr.mymall.pojo.Product;
 import com.ltr.mymall.pojo.ProductImage;
 import com.ltr.mymall.pojo.PropertyValue;
 import com.ltr.mymall.pojo.Review;
+import com.ltr.mymall.pojo.ReviewExample;
 import com.ltr.mymall.pojo.User;
 import com.ltr.mymall.service.CategoryService;
 import com.ltr.mymall.service.OrderItemService;
@@ -77,7 +78,7 @@ public class ForeController {
 	@Autowired
 	OrderItemService orderItemService;
 	@Autowired
-	ReviewService reviewSerive;
+	ReviewService reviewService;
 
 	/**
 	 * 为前台的分类填充产品集合
@@ -113,7 +114,7 @@ public class ForeController {
 		product.setProductDetailImages(productDetailImages);
 
 		List<PropertyValue> propertyValueList = propertyValueService.list(product.getId());
-		List<Review> reviewList = reviewSerive.list(product.getId());
+		List<Review> reviewList = reviewService.list(product.getId());
 		productService.setReviewAndSaleNumber(product);
 		model.addAttribute("reviews", reviewList);
 		model.addAttribute("p", product);
@@ -462,8 +463,8 @@ public class ForeController {
 	 * @return
 	 */
 	@RequestMapping("forepayed")
-	public String payed(int oid, float total, Model model) {
-	    Order order = orderService.get(oid);
+	public String payed(@RequestParam("oid")int orderId, float total, Model model) {
+	    Order order = orderService.get(orderId);
 	    order.setStatus(OrderService.waitDelivery);
 	    order.setPayDate(new Date());
 	    orderService.update(order);
@@ -478,8 +479,8 @@ public class ForeController {
 	 * @return
 	 */
 	@RequestMapping("foreconfirmPay")
-	public String confirmPay(int oid, Model model) {
-		Order order = orderService.get(oid);
+	public String confirmPay(@RequestParam("oid")int orderId, Model model) {
+		Order order = orderService.get(orderId);
 		orderItemService.fill(order);
 		model.addAttribute("o", order);
 		return "fore/confirmPay";
@@ -492,14 +493,15 @@ public class ForeController {
 	 * @return
 	 */
 	@RequestMapping("foreorderConfirmed")
-	public String orderConfirm(int oid, Model model) {
-		Order order = orderService.get(oid);
+	public String orderConfirm(@RequestParam("oid")int orderId, Model model) {
+		Order order = orderService.get(orderId);
 		// 修改订单状态为等待评价
 		order.setStatus(OrderService.waitReview);
 		order.setConfirmDate(new Date());
 		orderService.update(order);
 		return "fore/orderConfirmed";
 	}
+	
 	
 	/**
 	 * 删除订单
@@ -517,6 +519,56 @@ public class ForeController {
         orderService.update(o);
         return "success";
     }
+	
+	/**
+	 * 前往评价商品
+	 * TODO 为每个订单项单独设置评价
+	 * @param orderId
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("forereview")
+	public String review(@RequestParam("oid")int orderId, Model model) {
+		Order order = orderService.get(orderId);
+		orderItemService.fill(order);
+		Product product = order.getOrderItems().get(0).getProduct();
+		List<Review> reviews = reviewService.list(product.getId());
+		productService.setReviewAndSaleNumber(product);
+		model.addAttribute("p", product);
+	    model.addAttribute("o", order);
+	    model.addAttribute("reviews", reviews);
+	    return "fore/review";
+	}
+	
+	/**
+	 * 完成评价并显示其他人的评价
+	 * @param orderId
+	 * @param productId
+	 * @param session
+	 * @param model
+	 * @param content
+	 * @return
+	 */
+	@RequestMapping("foredoreview")
+	public String doReview(@RequestParam("oid")int orderId,@RequestParam("pid") int productId,HttpSession session,Model model,String content) {
+		Order order = orderService.get(orderId);
+	    // 更改订单状态为“已完成”
+		order.setStatus(OrderService.finish);
+	    orderService.update(order);
+	    // 转义评价
+	    content = HtmlUtils.htmlEscape(content);
+	    
+	    User user = (User) session.getAttribute("user");
+	    Review review = new Review();
+	    review.setContent(content);
+	    review.setPid(productId);
+	    review.setCreateDate(new Date());
+	    review.setUid(user.getId());
+	    reviewService.add(review);
+	    
+	    return "redirect:forereview?oid="+orderId+"&showonly=true";
+	    
+	}
 
 	/**
 	 * 用户注册

@@ -5,6 +5,8 @@
 可以在"**com.ltr.mymall.controller.ForeController**"中的"**foreCategory**"方法下修改"**productCount**"的值来改变每页显示的商品数量<br><br>
 后台管理员可以注册(注册码ltr)、登录，更改各种商品及其分类信息，查看用户、订单，安排发货。<br><br>
 
+在解决数据一致性与超卖问题方面，考虑到并发访问量不是很高，多数情况下不存在争用，所以使用了声明式事务与乐观锁。<br><br>
+
 ## 项目使用到的工具
 - Eclipse IDE for Enterprise Java Developers,Version: 2019-03 (4.11.0)<br>
 - MySQL,Version: 8.0.15  
@@ -27,7 +29,13 @@
 │   │   │               ├── comparator  前台商品排序比较器
 │   │   │               │   
 │   │   │               ├── controller  SpringMVC——Controller
-│   │   │               │   
+│   │   │               │
+│   │   │               ├── dto         对创建订单事务操作结果的封装
+│   │   │               │ 
+│   │   │               ├── exception   自定义Exception
+│   │   │               │   ├── ConcurrentChangeException.java
+│   │   │               │   └── OutOfStockException.java 
+│   │   │               │ 
 │   │   │               ├── interceptor SpringMVC拦截器，用于拦截前后台登录
 │   │   │               │  
 │   │   │               ├── mapper      DAO
@@ -94,9 +102,21 @@
 │   │           │   │
 │   │           │   └── include   公共页面
 │   │           │       ├── admin 后台公共页面
-│   │           │       │
+│   │           │       │   ├── adminFooter.jsp
+│   │           │       │   ├── adminHeader.jsp
+│   │           │       │   ├── adminNavigator.jsp
+│   │           │       │   └── adminPage.jsp
 │   │           │       └── fore  前台公共页面
 │   │           │           ├── buyPage.jsp
+│   │           │           ├── cart
+│   │           │           │   ├── alipayPage.jsp
+│   │           │           │   ├── boughtPage.jsp
+│   │           │           │   ├── cartPage.jsp
+│   │           │           │   ├── confirmPayPage.jsp
+│   │           │           │   ├── nostockPage.jsp
+│   │           │           │   ├── orderConfirmedPage.jsp
+│   │           │           │   ├── payedPage.jsp
+│   │           │           │   └── reviewPage.jsp
 │   │           │           ├── category
 │   │           │           │   ├── categoryPage.jsp
 │   │           │           │   ├── productsByCategory.jsp
@@ -133,7 +153,9 @@
 │                   └── mymall
 │                       └── service
 │                           └── impl
-│                               └── OrderItemServiceImplTest.java
+│                               ├── OrderItemServiceImplTest.java
+│                               ├── OrderServiceImplTest.java
+│                               └── ProductServiceImplTest.java
 
 ```
 
