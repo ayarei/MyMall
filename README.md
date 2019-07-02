@@ -7,12 +7,15 @@
 
 在解决数据一致性与超卖问题方面，考虑到并发访问量不是很高，多数情况下不存在争用，所以使用了声明式事务与乐观锁。<br><br>
 
+使用Redis缓存了分类页查询的列表，在分类未改变的情况下，查看分类表的每页时只会执行一次数据库查询，其他时候都从Redis取数据。同时也缓存了查询单个分类对象的情况。使用protostuff作为Redis的序列化工具。
+
 ## 项目使用到的工具
-- Eclipse IDE for Enterprise Java Developers,Version: 2019-03 (4.11.0)<br>
-- MySQL,Version: 8.0.15  
-- Spring,Version: 4.1.3  
-- MyBatis,Version: 3.1.1  
-- TomCat, Version: 8.0  
+- Eclipse IDE for Enterprise Java Developers,Version: 2019-03 (4.11.0)  
+- MySQL,Version:	8.0.15  
+- Spring,Version:	4.1.3  
+- MyBatis,Version:	3.1.1  
+- TomCat, Version:	8.0  
+- Redis, Version:	3.2.100
 
 ## 项目结构
 
@@ -39,9 +42,13 @@
 │   │   │               ├── interceptor SpringMVC拦截器，用于拦截前后台登录
 │   │   │               │  
 │   │   │               ├── mapper      DAO
+│   │   │               │   └── cache   Redis缓存DAO
+│   │   │               │       
 │   │   │               │   
 │   │   │               ├── pojo        Entity
-│   │   │               │   
+│   │   │               │   │
+│   │   │               │   └── SerializeDeserializeWrapper.java *用于序列化集合的包装类！*
+│   │   │               │ 
 │   │   │               ├── service     Web service
 │   │   │               │   │
 │   │   │               │   └── impl    Service实现类
@@ -50,17 +57,21 @@
 │   │   │                   ├── ImageUtil.java              对上传的图片进行处理(更改为.jpg，更改图片大小)
 │   │   │                   ├── MybatisGenerator.java       MyBatis逆向工程的执行类
 │   │   │                   ├── OverIsMergeablePlugin.java  MyBatis逆向工程的插件，防止生成的.xml出现重复内容
+│   │   │                   ├── ProtoStuffUtil.java         Redis序列化工具类，用于序列化集合
 │   │   │                   ├── Page.java                   实现分页的工具类，可以在里面更改每页显示数据的数量（默认显示8个）
 │   │   │                   └── UploadedImageFile.java      接受上传文件的注入
 │   │   ├── resources
-│   │   │   ├── applicationContext.xml  Spring-Mybatis配置文件
 │   │   │   ├── generatorConfig.xml     MyBatis逆向工程配置文件
 │   │   │   ├── jdbc.properties         数据库连接相关信息，若使用5.x版本的MySQL，需要更改URL格式
 │   │   │   ├── log4j.properties        日志的配置文件，可以配置输出信息
+│   │   │   ├── redis.properties			Redis的配置文件
 │   │   │   ├── mapper                  与DAO对应的.xml文件   
-│   │   │   ├── springMVC.xml           SpringMVC配置文件
+│   │   │   ├── Spring
+│   │   │   │   ├── applicationContext-Redis.xml  Spring-Redis配置文件
+│   │   │   │   ├── applicationContext.xml        Spring-Mybatis配置文件
+│   │   │   │   └── springMVC.xml                 SpringMVC配置文件
 │   │   │   └── SQL
-│   │   │       ├── CreateDataBase.sql  建数据库、键表语句
+│   │   │       ├── CreateDataBase.sql  建数据库、建表语句
 │   │   │       └── mymall.sql          展示网站效果的基本数据（静态资源在后面给出）
 │   │   └── webapp
 │   │       ├── admin

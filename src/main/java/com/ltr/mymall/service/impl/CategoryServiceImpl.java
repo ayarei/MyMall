@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ltr.mymall.mapper.CategoryMapper;
+import com.ltr.mymall.mapper.cache.CategoryRedis;
 import com.ltr.mymall.pojo.Category;
 import com.ltr.mymall.pojo.CategoryExample;
 import com.ltr.mymall.service.CategoryService;
@@ -14,18 +15,9 @@ public class CategoryServiceImpl implements CategoryService{
 
 	@Autowired
 	CategoryMapper categoryMapper;
-	
-/*******************PageHelper提供分页功能**************************/
-	/*public List<Category> list(Page page) {
-		return categoryMapper.list(page);
-	}
+	@Autowired
+	CategoryRedis categoryRedis;
 
-	@Override
-	public int total() {
-	
-		return categoryMapper.total();
-	}*/
-/*******************************************************************/
 	@Override
 	public List<Category> list() {	
 		CategoryExample example =new CategoryExample();
@@ -35,26 +27,41 @@ public class CategoryServiceImpl implements CategoryService{
 	
 	@Override
 	public void add(Category category) {
-		categoryMapper.insert(category);
-		
+		categoryMapper.insert(category);	
+		categoryRedis.clearAllList();
 	}
 
 	@Override
 	public void delete(int id) {
 		categoryMapper.deleteByPrimaryKey(id);
-		
+		categoryRedis.clearAllList();
+		Category test = categoryRedis.getCategory(id);
+		if(test != null) {
+			categoryRedis.clear(id);
+		}
 	}
 
+	/**
+	 * 首先访问Redis缓存
+	 */
 	@Override
 	public Category get(int id) {
-		return categoryMapper.selectByPrimaryKey(id);
+		Category result = categoryRedis.getCategory(id);
+		if(result == null) {
+			result = categoryMapper.selectByPrimaryKey(id);
+			categoryRedis.putCategory(result);
+		}
+		return result;
 	}
 
 	@Override
 	public void update(Category category) {
-		categoryMapper.updateByPrimaryKeySelective(category);		
+		categoryMapper.updateByPrimaryKeySelective(category);
+		// 如果Redis中存在此对象则移除
+		categoryRedis.clearAllList();
+		Category test = categoryRedis.getCategory(category.getId());
+		if(test != null) {
+			categoryRedis.clear(category.getId());
+		}	
 	}
-
-	
-
 }

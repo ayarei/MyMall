@@ -17,7 +17,7 @@ import com.ltr.mymall.service.OrderItemService;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:applicationContext.xml")
+@ContextConfiguration("classpath:Spring/applicationContext.xml")
 public class OrderItemServiceImplTest {
 
 	private final Logger logger = Logger.getLogger(this.getClass());

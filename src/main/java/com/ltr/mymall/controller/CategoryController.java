@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ltr.mymall.mapper.ProductMapper;
 import com.ltr.mymall.mapper.PropertyMapper;
+import com.ltr.mymall.mapper.cache.CategoryRedis;
 import com.ltr.mymall.pojo.Category;
 import com.ltr.mymall.pojo.Product;
 import com.ltr.mymall.pojo.ProductExample;
@@ -43,23 +44,43 @@ public class CategoryController {
 
 	@Autowired
 	PropertyMapper propertyMapper;
+	
+	@Autowired
+	CategoryRedis categoryRedis;
 
 	/**
 	 * 使用PageHelper分页显示
-	 * 
+	 * 使用Redis缓存分裂列表
 	 * @param model
 	 * @param page  获取页面相关数据
 	 * @return
 	 */
 	@RequestMapping("admin_category_list")
 	public String list(Model model, Page page) {
-		PageHelper.offsetPage(page.getStart(), page.getCount());
-		List<Category> cs = categoryService.list();
-		int total = (int) new PageInfo<>(cs).getTotal();
-		page.setTotal(total);
-
-		model.addAttribute("cs", cs);
-		model.addAttribute("page", page);
+		// 此页分类表首先从Redis从查找
+		com.github.pagehelper.Page<Category> redisCS = categoryRedis.getCategoryList(page.getStart());
+		Integer redisTotal = categoryRedis.getTotal();
+		// Redis中未找到
+		// Redis中总数据数和分类表缺一不可
+		/*
+		 * 使用PageHelper查询出来的List会转型成Page<E>的数据类型
+		 * 所以缓存的数据类型要改为Page<Category>,而不是List<Category>
+		 */
+		if(redisCS == null || redisTotal == null) {
+			PageHelper.offsetPage(page.getStart(), page.getCount());
+			List<Category> cs = categoryService.list();
+			int total = (int) new PageInfo<>(cs).getTotal();
+			page.setTotal(total);
+			categoryRedis.putCategory((com.github.pagehelper.Page<Category>)cs, page.getStart());
+			categoryRedis.putTotal(total);
+			model.addAttribute("cs", cs);
+			model.addAttribute("page", page);
+		}else {
+			page.setTotal(redisTotal);
+			model.addAttribute("cs", redisCS);
+			model.addAttribute("page", page);
+		}
+		
 		return "admin/listCategory";
 	}
 

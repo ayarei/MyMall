@@ -13,7 +13,7 @@ import com.ltr.mymall.pojo.Product;
 import com.ltr.mymall.service.ProductService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:applicationContext.xml")
+@ContextConfiguration("classpath:Spring/applicationContext.xmls")
 public class ProductServiceImplTest {
 
 	@Autowired

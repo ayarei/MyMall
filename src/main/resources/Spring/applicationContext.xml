@@ -10,12 +10,10 @@
 
 	<context:annotation-config />
 	<!-- Spring扫描的包 -->
-	<context:component-scan
-		base-package="com.ltr.mymall.service" />
+	<context:component-scan base-package="com.ltr.mymall.service" />
 
 	<!-- 导入数据库配置文件 -->
-	<context:property-placeholder
-		location="classpath:jdbc.properties" />
+	<context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true" />
 
 	<!-- 配置数据库连接池 -->
 	<bean id="dataSource"
@@ -58,7 +56,7 @@
 		<property name="typeAliasesPackage" value="com.ltr.mymall.pojo" />
 		<property name="dataSource" ref="dataSource" />
 		<property name="mapperLocations" value="classpath:mapper/*.xml" />
-		<property name="configLocation" value="classpath:mybatis-config.xml"></property>	
+		<property name="configLocation" value="classpath:mybatis-config.xml"/>	
 
 		<!-- 分页插件 -->
 		<property name="plugins">

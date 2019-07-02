@@ -23,7 +23,7 @@ import com.ltr.mymall.service.OrderService;
 import com.ltr.mymall.service.ProductService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:applicationContext.xml")
+@ContextConfiguration("classpath:Spring/applicationContext.xml")
 public class OrderServiceImplTest {
 
 	@Autowired
